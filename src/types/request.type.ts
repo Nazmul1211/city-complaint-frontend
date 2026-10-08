@@ -82,21 +82,46 @@ export interface MediaAttachment {
 export interface WorkUpdate {
   id: string;
   requestId: string;
-  staffId: string;
-  description: string;
+  authorId?: string;
+  staffId?: string;
+  note?: string;
+  description?: string;
+  visibleToCitizen?: boolean;
   createdAt: string;
+  author?: {
+    id: string;
+    name: string;
+    email: string;
+    avatarUrl?: string | null;
+  };
   staff?: User;
 }
 
 export interface TimelineEvent {
-  id: string;
-  requestId: string;
-  eventType: string;
-  title: string;
+  id?: string;
+  requestId?: string;
+  type?: string;
+  eventType?: string;
+  title?: string;
+  note?: string;
   description?: string | null;
+  timestamp?: string;
+  createdAt?: string;
   actorId?: string | null;
-  createdAt: string;
-  actor?: User;
+  actor?:
+    | {
+        id: string;
+        name: string;
+        email: string;
+        avatarUrl?: string | null;
+      }
+    | User;
+  department?: {
+    id: string;
+    name: string;
+    code: string;
+  };
+  meta?: Record<string, unknown>;
 }
 
 export interface ServiceRequest {
