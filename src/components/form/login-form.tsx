@@ -23,7 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { toast } from "@/components/ui/toast";
 import { useLogin } from "@/hooks";
-import { setAuthCookie } from "@/lib/cookie";
+import { setAuthCookies } from "@/lib/cookie";
 import { loginSchema } from "@/validation";
 
 export default function LoginForm() {
@@ -103,10 +103,14 @@ export default function LoginForm() {
         { email: value.email, password: value.password },
         {
           onSuccess: (res) => {
-            const token = res?.data?.accessToken;
-            if (token && typeof window !== "undefined") {
-              localStorage.setItem("accessToken", token);
-              setAuthCookie(token);
+            const accessToken = res?.data?.accessToken;
+            const refreshToken = res?.data?.refreshToken;
+            if (accessToken && typeof window !== "undefined") {
+              localStorage.setItem("accessToken", accessToken);
+              if (refreshToken) {
+                localStorage.setItem("refreshToken", refreshToken);
+              }
+              setAuthCookies(accessToken, refreshToken);
             }
             handleSuccessfulAuth(res?.data?.user?.role);
           },
@@ -141,10 +145,14 @@ export default function LoginForm() {
         { email, password },
         {
           onSuccess: (res) => {
-            const token = res?.data?.accessToken;
-            if (token && typeof window !== "undefined") {
-              localStorage.setItem("accessToken", token);
-              setAuthCookie(token);
+            const accessToken = res?.data?.accessToken;
+            const refreshToken = res?.data?.refreshToken;
+            if (accessToken && typeof window !== "undefined") {
+              localStorage.setItem("accessToken", accessToken);
+              if (refreshToken) {
+                localStorage.setItem("refreshToken", refreshToken);
+              }
+              setAuthCookies(accessToken, refreshToken);
             }
             handleSuccessfulAuth(res?.data?.user?.role || match?.role);
           },
@@ -165,7 +173,10 @@ export default function LoginForm() {
                 updatedAt: new Date().toISOString(),
               };
               localStorage.setItem("demo_user", JSON.stringify(demoUser));
-              setAuthCookie(`demo-token-${match?.role || "CITIZEN"}`);
+              setAuthCookies(
+                `demo-token-${match?.role || "CITIZEN"}`,
+                `demo-refresh-${match?.role || "CITIZEN"}`,
+              );
             }
             handleSuccessfulAuth(match?.role || "CITIZEN");
           },

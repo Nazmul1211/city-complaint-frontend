@@ -10,7 +10,7 @@ import {
   verifyAccount,
 } from "@/api";
 
-import { clearAuthCookie, getAuthCookie } from "@/lib/cookie";
+import { clearAuthCookies, getAuthCookie } from "@/lib/cookie";
 
 function parseJwtPayload(token: string) {
   try {
@@ -55,8 +55,9 @@ export function useLogout() {
     onSettled: () => {
       if (typeof window !== "undefined") {
         localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
         localStorage.removeItem("demo_user");
-        clearAuthCookie();
+        clearAuthCookies();
       }
       queryClient.removeQueries({ queryKey: ["user"] });
     },
