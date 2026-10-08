@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { type ReactNode, useEffect } from "react";
 import { useGetMe } from "@/hooks";
+import { getAuthCookie } from "@/lib/cookie";
 import AuthLoading from "./auth-loading";
 
 export default function AuthGuard({ children }: { children: ReactNode }) {
@@ -13,6 +14,11 @@ export default function AuthGuard({ children }: { children: ReactNode }) {
   const user = data?.data;
 
   useEffect(() => {
+    const token = getAuthCookie();
+    if (!token) {
+      router.replace("/login");
+      return;
+    }
     if (isPending) {
       return;
     }

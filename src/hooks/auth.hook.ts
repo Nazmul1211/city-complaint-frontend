@@ -86,25 +86,21 @@ export function useGetMe() {
   return useQuery({
     queryKey: ["user"],
     queryFn: async () => {
+      if (typeof window !== "undefined") {
+        const token = getAuthCookie();
+        if (!token) {
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+          localStorage.removeItem("demo_user");
+          throw new Error("No authentication cookie found");
+        }
+      }
+
       try {
         return await getMe();
       } catch (err) {
         if (typeof window !== "undefined") {
-          const demoUserStr = localStorage.getItem("demo_user");
-          if (demoUserStr) {
-            try {
-              const demoUser = JSON.parse(demoUserStr);
-              return {
-                success: true,
-                statusCode: 200,
-                message: "Demo session user",
-                data: demoUser,
-              };
-            } catch {}
-          }
-
-          const token = localStorage.getItem("accessToken") || getAuthCookie();
-
+          const token = getAuthCookie();
           if (token) {
             const payload = parseJwtPayload(token);
             if (payload?.userId) {

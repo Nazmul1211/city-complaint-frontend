@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { type ReactNode, useEffect } from "react";
 import { useGetMe } from "@/hooks";
+import { getAuthCookie } from "@/lib/cookie";
 import type { UserRole } from "@/types";
 import AccessDenied from "./access-denied";
 import AuthLoading from "./auth-loading";
@@ -22,6 +23,11 @@ export default function RoleGuard({ children, roles }: IProps) {
   const isAuthorized = !!user && roles.includes(user.role);
 
   useEffect(() => {
+    const token = getAuthCookie();
+    if (!token) {
+      router.replace("/login");
+      return;
+    }
     if (isPending) {
       return;
     }
