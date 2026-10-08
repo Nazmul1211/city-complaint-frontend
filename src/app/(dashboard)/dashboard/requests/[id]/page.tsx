@@ -13,12 +13,14 @@ import {
   RefreshCw,
   Share2,
   ShieldCheck,
+  Star,
   User,
   Wrench,
 } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useMemo, useState } from "react";
+import { FeedbackModal } from "@/components/form";
 import {
   AttachmentGallery,
   SlaCountdownBadge,
@@ -30,10 +32,12 @@ import { PriorityBadge, StatusBadge } from "@/components/ui/status-badge";
 import { toast } from "@/components/ui/toast";
 import {
   useGetServiceRequestById,
+  useRequestFeedback,
   useRequestTimeline,
   useRequestUpdates,
 } from "@/hooks";
 import type {
+  Feedback,
   MediaAttachment,
   ServiceRequest,
   TimelineEvent,
@@ -49,6 +53,7 @@ const FALLBACK_DETAILS_MAP: Record<
     timeline: TimelineEvent[];
     updates: WorkUpdate[];
     attachments: MediaAttachment[];
+    feedback?: Feedback;
   }
 > = {
   "req-1": {
@@ -309,6 +314,8 @@ export default function RequestDetailsPage() {
   const params = useParams();
   const queryClient = useQueryClient();
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
+  const [localFeedback, setLocalFeedback] = useState<Feedback | null>(null);
 
   const rawId = params?.id;
   const requestId = Array.isArray(rawId) ? rawId[0] : (rawId as string) || "";
@@ -325,6 +332,9 @@ export default function RequestDetailsPage() {
 
   const { data: fetchedUpdates, refetch: refetchUpdates } =
     useRequestUpdates(requestId);
+
+  const { data: fetchedFeedback, refetch: refetchFeedback } =
+    useRequestFeedback(requestId);
 
   // Fallback data resolution
   const fallbackEntry = FALLBACK_DETAILS_MAP[requestId] || {
@@ -405,6 +415,13 @@ export default function RequestDetailsPage() {
     return fallbackEntry.attachments;
   }, [request.attachments, fallbackEntry.attachments]);
 
+  const activeFeedback: Feedback | null = useMemo(() => {
+    if (localFeedback) return localFeedback;
+    if (fetchedFeedback?.data) return fetchedFeedback.data;
+    if (fallbackEntry?.feedback) return fallbackEntry.feedback;
+    return null;
+  }, [localFeedback, fetchedFeedback, fallbackEntry]);
+
   // Actions
   const handleCopyTicketNo = () => {
     if (!request.requestNo) return;
@@ -438,7 +455,9 @@ export default function RequestDetailsPage() {
       refetchRequest(),
       refetchTimeline(),
       refetchUpdates(),
+      refetchFeedback(),
       queryClient.invalidateQueries({ queryKey: ["request", requestId] }),
+      queryClient.invalidateQueries({ queryKey: ["feedback", requestId] }),
     ]);
     setIsRefreshing(false);
     toast.add({
@@ -679,18 +698,75 @@ export default function RequestDetailsPage() {
             <WorkUpdateFeed updates={workUpdates} />
           </div>
 
-          {/* Citizen Feedback Banner (when resolved) */}
+          {/* Citizen Feedback Rating Section (when resolved or closed) */}
           {isResolved && (
-            <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-5 space-y-3">
-              <div className="flex items-center gap-2 font-semibold text-sm text-emerald-700 dark:text-emerald-400">
-                <CheckCircle2 className="size-4" />
-                <span>Issue Marked as Resolved</span>
+            <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-5 space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2 font-semibold text-sm text-emerald-700 dark:text-emerald-400">
+                    <CheckCircle2 className="size-4" />
+                    <span>Issue Marked as Resolved</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    The responsible city agency has certified completion of this
+                    ticket.
+                  </p>
+                </div>
+                {!activeFeedback && (
+                  <Button
+                    size="sm"
+                    onClick={() => setFeedbackModalOpen(true)}
+                    className="gap-1.5 text-xs bg-emerald-600 hover:bg-emerald-700 text-white shrink-0"
+                  >
+                    <Star className="size-3.5 fill-current" />
+                    Rate Resolution Quality
+                  </Button>
+                )}
               </div>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                The responsible city agency has certified completion of this
-                ticket. If the repair has not been performed to standard or has
-                recurred, you may lodge a re-inspection review.
-              </p>
+
+              {activeFeedback ? (
+                <div className="rounded-md border bg-card/60 p-4 space-y-2 mt-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xs font-semibold text-foreground">
+                        Your Rating:
+                      </span>
+                      <div className="flex items-center gap-0.5">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <Star
+                            key={star}
+                            className={`size-3.5 ${
+                              star <= activeFeedback.rating
+                                ? "text-amber-500 fill-amber-500"
+                                : "text-muted-foreground/30"
+                            }`}
+                          />
+                        ))}
+                      </div>
+                      <span className="text-xs font-bold text-amber-600 dark:text-amber-400 ml-1">
+                        {activeFeedback.rating} / 5
+                      </span>
+                    </div>
+                    {activeFeedback.createdAt && (
+                      <span className="text-[11px] text-muted-foreground">
+                        {new Date(
+                          activeFeedback.createdAt,
+                        ).toLocaleDateString()}
+                      </span>
+                    )}
+                  </div>
+                  {activeFeedback.comment && (
+                    <p className="text-xs text-foreground/90 italic bg-muted/40 p-2.5 rounded border">
+                      &quot;{activeFeedback.comment}&quot;
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <p className="text-xs text-muted-foreground">
+                  Your rating helps Dhaka City Corporation evaluate contractor
+                  performance and municipal staff responsiveness.
+                </p>
+              )}
             </div>
           )}
         </div>
@@ -806,6 +882,18 @@ export default function RequestDetailsPage() {
           </div>
         </div>
       </div>
+
+      {/* Citizen Feedback Rating Modal */}
+      <FeedbackModal
+        open={feedbackModalOpen}
+        onOpenChange={setFeedbackModalOpen}
+        requestId={requestId}
+        requestTitle={request.title}
+        onSuccess={(created) => {
+          setLocalFeedback(created);
+          refetchFeedback();
+        }}
+      />
     </div>
   );
 }
