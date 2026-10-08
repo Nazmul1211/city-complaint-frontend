@@ -56,3 +56,12 @@ export interface User {
   citizen?: CitizenProfile | null;
   departmentMemberships?: DepartmentMembership[];
 }
+
+export interface UpdateMyProfilePayload {
+  name?: string;
+  phone?: string;
+  citizen?: {
+    contactNumber?: string;
+    address?: string;
+  };
+}
