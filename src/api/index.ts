@@ -1,2 +1,1 @@
-// API service exports
-export {};
+export * from "./auth.api";

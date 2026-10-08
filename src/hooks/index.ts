@@ -1,2 +1,1 @@
-// Custom hook exports
-export {};
+export * from "./auth.hook";
