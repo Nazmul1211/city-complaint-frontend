@@ -8,11 +8,35 @@
 
 ---
 
+## 🚨 MANDATORY EXECUTION RULE: Reference-First Pattern Adoption (`docs/PH-Healthcare-Nextjs`)
+
+For **every single commit and feature** implemented in this project, the following 3-step rule **MUST** be strictly enforced:
+
+1. **🔍 Step 1: Pre-Commit Reference Inspection (`docs/PH-Healthcare-Nextjs`)**
+   - Before writing or designing any new file (API service, hook, UI component, form, page, guard, type, or schema), **first inspect `docs/PH-Healthcare-Nextjs`**.
+   - Check if an equivalent or similar component/method exists (e.g., `src/api/*`, `src/hooks/*`, `src/components/ui/*`, `src/components/auth/*`, `src/components/dashboard/*`, `src/types/*`, `src/routes/*`, `src/validation/*`).
+
+2. **⚡ Step 2: Code & Design Method Replication**
+   - If matched, **strictly replicate the exact code style, architectural conventions, patterns, and design methods** from `PH-Healthcare-Nextjs`.
+   - Maintain strict consistency in:
+     - API services using `ofetch` and returning standard promises.
+     - Custom hooks wrapping TanStack Query `useQuery` / `useMutation`.
+     - Base UI + Tailwind styling patterns and shadcn `base-lyra` primitives.
+     - Form handling using `@tanstack/react-form` + Zod schemas.
+     - Auth security guards (`AuthGuard`, `RoleGuard`, `AccessDenied`, `AuthLoading`).
+     - Dashboard layouts (`DashboardShell`, `DashboardSidebar`, `DashboardHeader`).
+
+3. **🔗 Step 3: Backend Domain Adaptation (`docs/city-complaint-backend`)**
+   - Adapt the replicated patterns to the City Complaint domain, Prisma schemas, role enums (`CITIZEN`, `STAFF`, `ADMIN`, `SUPER_ADMIN`), and Express 5 API payloads.
+
+---
+
 ## 📑 Table of Contents
-1. [Architecture Blueprint & Reference Model](#-architecture-blueprint--reference-model)
-2. [Demo Credentials & User Roles](#-demo-credentials--user-roles)
-3. [Page Coverage Matrix (18+ Pages)](#-page-coverage-matrix-18-pages)
-4. [Master 30-Commit Roadmap](#-master-30-commit-roadmap)
+1. [Mandatory Execution Rule: Reference-First Pattern Adoption](#-mandatory-execution-rule-reference-first-pattern-adoption-docsph-healthcare-nextjs)
+2. [Architecture Blueprint & Reference Model](#-architecture-blueprint--reference-model)
+3. [Demo Credentials & User Roles](#-demo-credentials--user-roles)
+4. [Page Coverage Matrix (18+ Pages)](#-page-coverage-matrix-18-pages)
+5. [Master 30-Commit Roadmap](#-master-30-commit-roadmap)
    - [Phase 1: Foundation, Blocker UI & Auth (Commits 1–6)](#phase-1-foundation-blocker-ui--auth-commits-16)
    - [Phase 2: Shell Layouts, Sidebars & Route Guards (Commits 7–10)](#phase-2-shell-layouts-sidebars--route-guards-commits-710)
    - [Phase 3: Public & Civic Marketing Pages (Commits 11–14)](#phase-3-public--civic-marketing-pages-commits-1114)
@@ -20,7 +44,7 @@
    - [Phase 5: Staff / Field Technician Portal (Commits 20–23)](#phase-5-staff--field-technician-portal-commits-2023)
    - [Phase 6: Admin Governance & City Operations (Commits 24–27)](#phase-6-admin-governance--city-operations-commits-2427)
    - [Phase 7: Payments, Notifications & Final Polish (Commits 28–30)](#phase-7-payments-notifications--final-polish-commits-2830)
-5. [Git Workflow & Verification Best Practices](#-git-workflow--verification-best-practices)
+6. [Git Workflow & Verification Best Practices](#-git-workflow--verification-best-practices)
 
 ---
 
@@ -479,22 +503,25 @@ The application strictly implements **3 distinct primary roles** matching `docs/
 
 To guarantee the required **25–35 clean commits** with optimal Git health:
 
-1. **Commit Convention:**
+1. **Reference Inspection (Mandatory Step 0):**
+   - Before drafting code for a commit, check `docs/PH-Healthcare-Nextjs` for equivalent components, hooks, schemas, types, or API patterns.
+   - Replicate the proven methods and design patterns directly.
+2. **Commit Convention:**
    - Use standard conventional commit prefixes: `feat:`, `fix:`, `chore:`, `refactor:`.
    - Keep messages short, descriptive, and under 60 characters.
-2. **Atomic Commits:**
+3. **Atomic Commits:**
    - Stage only the files corresponding to the specific feature.
    ```bash
    git add src/components/form/login-form.tsx src/components/auth/demo-login-cards.tsx
    git commit -m "feat: build login page with one-click demo role logins"
    ```
-3. **Pre-Commit Verification:**
+4. **Pre-Commit Verification:**
    Before every commit, always run:
    ```bash
    bunx tsc --noEmit    # Ensure TypeScript passes
    bun run lint         # Ensure Biome linter passes
    ```
-4. **Push Cadence:**
+5. **Push Cadence:**
    Push your commits regularly to origin:
    ```bash
    git push origin main
