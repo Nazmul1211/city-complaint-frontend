@@ -28,6 +28,7 @@ import {
 import { Spinner } from "@/components/ui/spinner";
 import { toast } from "@/components/ui/toast";
 import { useForgotPassword, useVerifyAccount } from "@/hooks";
+import { setAuthCookies } from "@/lib/cookie";
 
 const INITIAL_COOLDOWN = 180; // 3 minutes
 
@@ -72,7 +73,32 @@ export default function VerifyOtpComponent({
     verifyAccount(
       { email, otp: otpValue },
       {
-        onSuccess: async () => {
+        onSuccess: async (res) => {
+          const accessToken = res?.data?.accessToken;
+          const refreshToken = res?.data?.refreshToken;
+          let userRole = res?.data?.user?.role;
+
+          if (accessToken && typeof window !== "undefined") {
+            localStorage.setItem("accessToken", accessToken);
+            if (refreshToken) {
+              localStorage.setItem("refreshToken", refreshToken);
+            }
+            setAuthCookies(accessToken, refreshToken);
+
+            if (!userRole) {
+              try {
+                const base64Url = accessToken.split(".")[1];
+                if (base64Url) {
+                  const base64 = base64Url
+                    .replace(/-/g, "+")
+                    .replace(/_/g, "/");
+                  const payload = JSON.parse(window.atob(base64));
+                  userRole = payload?.role;
+                }
+              } catch {}
+            }
+          }
+
           toast.add({
             title: "Account Verified Successfully",
             description:
@@ -81,7 +107,15 @@ export default function VerifyOtpComponent({
           });
           await queryClient.invalidateQueries({ queryKey: ["user"] });
           if (onClose) onClose();
-          router.push("/dashboard");
+
+          const resolvedRole = userRole || "CITIZEN";
+          if (resolvedRole === "ADMIN" || resolvedRole === "SUPER_ADMIN") {
+            router.push("/admin");
+          } else if (resolvedRole === "STAFF") {
+            router.push("/staff");
+          } else {
+            router.push("/dashboard");
+          }
         },
         onError: (err: Error) => {
           setErrorMessage(

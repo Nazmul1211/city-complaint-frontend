@@ -21,6 +21,20 @@ const apiClient = ofetch.create({
       }
     }
   },
+  onResponseError({ response }) {
+    const errorData = response._data;
+    const backendMessage =
+      errorData?.message ||
+      (Array.isArray(errorData?.errors) && errorData.errors[0]?.message) ||
+      errorData?.error?.message;
+
+    if (backendMessage && typeof backendMessage === "string") {
+      const error = new Error(backendMessage);
+      (error as unknown as { data: unknown }).data = errorData;
+      (error as unknown as { status: number }).status = response.status;
+      throw error;
+    }
+  },
 });
 
 export default apiClient;

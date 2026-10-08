@@ -314,6 +314,8 @@ export default function LoginForm() {
         </FieldGroup>
       </form>
 
+      <FieldSeparator>Or continue with</FieldSeparator>
+
       <GoogleLoginComponent />
 
       {/* Registration Link */}
