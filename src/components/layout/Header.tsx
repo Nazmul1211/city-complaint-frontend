@@ -14,6 +14,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { toast } from "@/components/ui/toast";
 import { useGetMe, useLogout } from "@/hooks";
 import type { UserRole } from "@/types";
@@ -164,15 +165,18 @@ export default function Header() {
               </Button>
             </div>
           )}
+
+          <ThemeToggle />
         </div>
 
-        {/* Mobile Menu Hamburger */}
+        {/* Mobile Menu Hamburger & Theme Toggle */}
         <div className="flex items-center gap-2 md:hidden">
+          <ThemeToggle />
           <button
             type="button"
             onClick={() => setMobileMenuOpen((prev) => !prev)}
             aria-label="Toggle navigation menu"
-            className="flex size-9 items-center justify-center rounded-md border border-border text-foreground hover:bg-muted"
+            className="flex size-9 items-center justify-center rounded-md border border-border text-foreground hover:bg-muted cursor-pointer"
           >
             {mobileMenuOpen ? (
               <X className="size-5" />

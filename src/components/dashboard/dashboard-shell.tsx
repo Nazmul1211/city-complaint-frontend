@@ -10,6 +10,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { toast } from "@/components/ui/toast";
 import { useGetMe, useLogout } from "@/hooks";
 import type { UserRole } from "@/types";
@@ -73,6 +74,7 @@ export default function DashboardShell({
                 </span>
               </div>
             )}
+            <ThemeToggle />
             <Button
               variant="ghost"
               size="sm"

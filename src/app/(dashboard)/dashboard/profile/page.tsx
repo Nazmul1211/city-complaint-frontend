@@ -14,9 +14,11 @@ import {
   User as UserIcon,
 } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 import { ProfileForm } from "@/components/form";
 import {
   AvatarUpload,
+  ChangePasswordModal,
   DeleteAccountDialog,
 } from "@/components/modules/profile";
 import { Button } from "@/components/ui/button";
@@ -26,6 +28,7 @@ import { useGetMe } from "@/hooks";
 import type { User } from "@/types";
 
 export default function CitizenProfilePage() {
+  const [changePasswordOpen, setChangePasswordOpen] = useState(false);
   const { data, isLoading } = useGetMe();
   const user = data?.data;
 
@@ -219,16 +222,15 @@ export default function CitizenProfilePage() {
             </p>
 
             <div className="pt-2">
-              <Link href="/forgot-password">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full gap-1.5 text-xs h-8"
-                >
-                  <KeyRound className="size-3.5" />
-                  Change Password / Reset
-                </Button>
-              </Link>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setChangePasswordOpen(true)}
+                className="w-full gap-1.5 text-xs h-8 cursor-pointer"
+              >
+                <KeyRound className="size-3.5" />
+                Change Password / Security
+              </Button>
             </div>
           </div>
         </div>
@@ -332,6 +334,13 @@ export default function CitizenProfilePage() {
           </div>
         </div>
       </div>
+
+      {/* Citizen Change Password Modal */}
+      <ChangePasswordModal
+        open={changePasswordOpen}
+        onOpenChange={setChangePasswordOpen}
+        userEmail={activeUser.email}
+      />
     </div>
   );
 }
