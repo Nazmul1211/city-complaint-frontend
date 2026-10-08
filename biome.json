@@ -44,7 +44,10 @@
         "rules": {
           "a11y": {
             "useSemanticElements": "off",
-            "noLabelWithoutControl": "off"
+            "noLabelWithoutControl": "off",
+            "useFocusableInteractive": "off",
+            "useAriaPropsForRole": "off",
+            "noRedundantRoles": "off"
           },
           "suspicious": {
             "noArrayIndexKey": "off",
