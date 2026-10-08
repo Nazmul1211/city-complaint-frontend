@@ -18,23 +18,34 @@ export type RequestStatus =
 export interface Category {
   id: string;
   name: string;
-  code: string;
+  code?: string;
   description?: string | null;
   departmentId: string;
+  paymentRequired?: boolean;
+  defaultFeeAmount?: number | string | null;
+  currency?: string;
   isActive: boolean;
+  department?: Department;
   slaPolicy?: SlaPolicy | null;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface SlaPolicy {
   id: string;
   categoryId: string;
-  responseHours: number;
-  resolutionHours: number;
+  responseWithinHours?: number;
+  resolutionWithinHours?: number;
+  responseHours?: number;
+  resolutionHours?: number;
+  reopenWindowHours?: number;
+  isActive?: boolean;
 }
 
 export interface Ward {
   id: string;
-  wardNumber: string;
+  wardNumber?: string;
+  code?: string;
   name: string;
   city: string;
   isActive: boolean;
@@ -48,6 +59,13 @@ export interface Department {
   contactEmail?: string | null;
   contactPhone?: string | null;
   isActive: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+  _count?: {
+    members?: number;
+    categories?: number;
+  };
+  categories?: Category[];
 }
 
 export interface MediaAttachment {
