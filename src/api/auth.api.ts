@@ -1,25 +1,25 @@
 import apiClient from "@/lib/apiClient";
 import type {
   ApiResponse,
+  AuthTokens,
+  ForgotPasswordPayload,
   GoogleLoginPayload,
   LoginPayload,
   RegistrationPayload,
+  ResetPasswordPayload,
   User,
   VerifyAccountPayload,
 } from "@/types";
 
 export function userLogin(payload: LoginPayload) {
-  return apiClient<ApiResponse<{ accessToken: string; user: User }>>(
-    "/auth/login",
-    {
-      method: "POST",
-      body: payload,
-    },
-  );
+  return apiClient<ApiResponse<AuthTokens & { user?: User }>>("/auth/login", {
+    method: "POST",
+    body: payload,
+  });
 }
 
 export function verifyAccount(payload: VerifyAccountPayload) {
-  return apiClient<ApiResponse<{ accessToken: string; user: User }>>(
+  return apiClient<ApiResponse<AuthTokens & { user?: User }>>(
     "/auth/verify-email",
     {
       method: "POST",
@@ -46,11 +46,25 @@ export function getMe() {
 }
 
 export function googleOAuth(payload: GoogleLoginPayload) {
-  return apiClient<ApiResponse<{ accessToken: string; user: User }>>(
+  return apiClient<ApiResponse<AuthTokens & { user?: User }>>(
     "/auth/google-login",
     {
       method: "POST",
       body: payload,
     },
   );
+}
+
+export function forgotPassword(payload: ForgotPasswordPayload) {
+  return apiClient<ApiResponse<null>>("/auth/forgot-password", {
+    method: "POST",
+    body: payload,
+  });
+}
+
+export function resetPassword(payload: ResetPasswordPayload) {
+  return apiClient<ApiResponse<null>>("/auth/reset-password", {
+    method: "POST",
+    body: payload,
+  });
 }
