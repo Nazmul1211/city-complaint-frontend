@@ -24,3 +24,20 @@ export function deleteMyAccount() {
     method: "DELETE",
   });
 }
+
+export interface UserFilterParams {
+  role?: string;
+  status?: string;
+  departmentId?: string;
+  searchTerm?: string;
+  page?: number;
+  limit?: number;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+}
+
+export function getAllUsers(params?: UserFilterParams) {
+  return apiClient<ApiResponse<User[]>>("/users", {
+    params,
+  });
+}

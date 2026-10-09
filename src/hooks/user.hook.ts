@@ -1,6 +1,12 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { deleteMyAccount, updateMyProfile, uploadProfileImage } from "@/api";
+import {
+  deleteMyAccount,
+  getAllUsers,
+  type UserFilterParams,
+  updateMyProfile,
+  uploadProfileImage,
+} from "@/api";
 import { toast } from "@/components/ui/toast";
 import { clearAuthCookies } from "@/lib/cookie";
 import type { ApiResponse, UpdateMyProfilePayload, User } from "@/types";
@@ -18,7 +24,6 @@ export function useUpdateProfile() {
   return useMutation({
     mutationFn: (payload: UpdateMyProfilePayload) => updateMyProfile(payload),
     onSuccess: (response: ApiResponse<User>) => {
-      // Update cache directly and invalidate query
       if (response.data) {
         queryClient.setQueryData(["user"], response);
       }
@@ -94,5 +99,12 @@ export function useDeleteMyAccount() {
         description: message,
       });
     },
+  });
+}
+
+export function useGetUsers(params?: UserFilterParams) {
+  return useQuery({
+    queryKey: ["users", params],
+    queryFn: () => getAllUsers(params),
   });
 }
