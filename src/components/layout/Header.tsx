@@ -13,6 +13,7 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { NotificationPopover } from "@/components/modules/notification";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { toast } from "@/components/ui/toast";
@@ -143,6 +144,7 @@ export default function Header() {
 
           {!isLoading && user && (
             <div className="flex items-center gap-3">
+              <NotificationPopover />
               <Link
                 href={role ? dashboardRoute[role] : "/dashboard"}
                 className="flex items-center gap-2 rounded-md border border-border bg-muted/40 px-2.5 py-1 text-xs font-medium text-foreground transition-colors hover:bg-muted"

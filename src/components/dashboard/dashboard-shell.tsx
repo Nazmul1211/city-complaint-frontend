@@ -4,6 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
+import { NotificationPopover } from "@/components/modules/notification";
 import { Button } from "@/components/ui/button";
 import {
   SidebarInset,
@@ -74,6 +75,7 @@ export default function DashboardShell({
                 </span>
               </div>
             )}
+            <NotificationPopover />
             <ThemeToggle />
             <Button
               variant="ghost"
