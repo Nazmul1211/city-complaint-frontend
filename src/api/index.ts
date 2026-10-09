@@ -5,6 +5,7 @@ export * from "./auth.api";
 export * from "./category.api";
 export * from "./department.api";
 export * from "./feedback.api";
+export * from "./payment.api";
 export * from "./request.api";
 export * from "./routing.api";
 export * from "./status.api";

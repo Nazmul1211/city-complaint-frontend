@@ -6,6 +6,7 @@ export * from "./category.hook";
 export { default as useDebounce } from "./debounce.hook";
 export * from "./department.hook";
 export * from "./feedback.hook";
+export * from "./payment.hook";
 export * from "./request.hook";
 export * from "./routing.hook";
 export * from "./status.hook";

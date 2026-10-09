@@ -3,6 +3,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import {
   ArrowLeft,
+  Banknote,
   Calendar,
   CheckCircle2,
   Clock,
@@ -21,6 +22,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import { FeedbackModal } from "@/components/form";
+import { IssuePaymentModal } from "@/components/modules/payment";
 import {
   AttachmentGallery,
   SlaCountdownBadge,
@@ -321,6 +323,7 @@ export default function RequestDetailsPage() {
   const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
   const [localFeedback, setLocalFeedback] = useState<Feedback | null>(null);
   const [statusModalOpen, setStatusModalOpen] = useState(false);
+  const [paymentModalOpen, setPaymentModalOpen] = useState(false);
 
   const { data: meData } = useGetMe();
   const userRole = meData?.data?.role;
@@ -578,15 +581,28 @@ export default function RequestDetailsPage() {
           </Button>
 
           {isStaffOrAdmin && (
-            <Button
-              size="sm"
-              onClick={() => setStatusModalOpen(true)}
-              className="gap-1.5 text-xs bg-primary text-primary-foreground hover:bg-primary/90"
-              title="Update casework status"
-            >
-              <Wrench className="size-3.5" />
-              <span>Update Status</span>
-            </Button>
+            <>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setPaymentModalOpen(true)}
+                className="gap-1.5 text-xs"
+                title="Issue municipal fee for this complaint"
+              >
+                <Banknote className="size-3.5 text-primary" />
+                <span className="hidden sm:inline">Issue Fee</span>
+              </Button>
+
+              <Button
+                size="sm"
+                onClick={() => setStatusModalOpen(true)}
+                className="gap-1.5 text-xs bg-primary text-primary-foreground hover:bg-primary/90"
+                title="Update casework status"
+              >
+                <Wrench className="size-3.5" />
+                <span>Update Status</span>
+              </Button>
+            </>
           )}
         </div>
       </div>
@@ -909,6 +925,15 @@ export default function RequestDetailsPage() {
         request={request}
         open={statusModalOpen}
         onOpenChange={setStatusModalOpen}
+        onSuccess={() => handleManualRefresh()}
+      />
+
+      {/* Staff/Admin Issue Payment Modal */}
+      <IssuePaymentModal
+        isOpen={paymentModalOpen}
+        onClose={() => setPaymentModalOpen(false)}
+        defaultRequestId={requestId}
+        defaultRequestNo={request.requestNo}
         onSuccess={() => handleManualRefresh()}
       />
     </div>
