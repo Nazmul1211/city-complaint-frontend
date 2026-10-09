@@ -17,8 +17,8 @@ export default function RequestsLoading() {
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {[1, 2, 3, 4, 5, 6].map((i) => (
-          <div key={i} className="space-y-3 rounded-lg border bg-card p-5">
+        {["sk-r1", "sk-r2", "sk-r3", "sk-r4", "sk-r5", "sk-r6"].map((key) => (
+          <div key={key} className="space-y-3 rounded-lg border bg-card p-5">
             <div className="flex items-center justify-between">
               <Skeleton className="h-4 w-24" />
               <Skeleton className="h-5 w-20" />
