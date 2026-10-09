@@ -2,18 +2,20 @@
 
 import { ArrowRight, CheckCircle2, ChevronRight, FileText } from "lucide-react";
 import Link from "next/link";
+import { SlaCountdownBadge } from "@/components/modules/requests/sla-countdown-badge";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PriorityBadge, StatusBadge } from "@/components/ui/status-badge";
-import { SlaCountdownBadge } from "@/components/modules/requests/sla-countdown-badge";
 import type { ServiceRequest } from "@/types";
 
 interface RecentAssignedListProps {
   requests: ServiceRequest[];
   isLoading?: boolean;
 }
+
+const SKELETON_ASSIGNED_KEYS = ["recent-1", "recent-2", "recent-3", "recent-4"];
 
 export function RecentAssignedList({
   requests,
@@ -27,9 +29,9 @@ export function RecentAssignedList({
           <Skeleton className="h-4 w-28" />
         </CardHeader>
         <CardContent className="space-y-3">
-          {Array.from({ length: 4 }).map((_, i) => (
+          {SKELETON_ASSIGNED_KEYS.map((key) => (
             <div
-              key={i}
+              key={key}
               className="flex items-center justify-between p-3.5 rounded-lg border bg-muted/20"
             >
               <div className="space-y-2">
@@ -60,7 +62,11 @@ export function RecentAssignedList({
           </Badge>
         </div>
         <Link href="/staff/assigned">
-          <Button variant="ghost" size="sm" className="gap-1 text-xs font-medium">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="gap-1 text-xs font-medium"
+          >
             View All Queue
             <ArrowRight className="size-3.5" />
           </Button>
@@ -77,8 +83,9 @@ export function RecentAssignedList({
               Queue is currently clear
             </p>
             <p className="max-w-sm text-xs text-muted-foreground">
-              There are no pending or open complaints assigned to your department.
-              New assignments routed by city admin will appear here in real-time.
+              There are no pending or open complaints assigned to your
+              department. New assignments routed by city admin will appear here
+              in real-time.
             </p>
           </div>
         ) : (

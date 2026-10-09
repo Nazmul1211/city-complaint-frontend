@@ -17,12 +17,17 @@ interface StaffMetricsProps {
   isLoading?: boolean;
 }
 
-export function StaffMetrics({ requests, isLoading = false }: StaffMetricsProps) {
+const SKELETON_METRIC_KEYS = ["metric-1", "metric-2", "metric-3", "metric-4"];
+
+export function StaffMetrics({
+  requests,
+  isLoading = false,
+}: StaffMetricsProps) {
   if (isLoading) {
     return (
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {Array.from({ length: 4 }).map((_, i) => (
-          <Card key={i} className="overflow-hidden">
+        {SKELETON_METRIC_KEYS.map((key) => (
+          <Card key={key} className="overflow-hidden">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <Skeleton className="h-4 w-24" />
               <Skeleton className="size-8 rounded-md" />
@@ -54,7 +59,11 @@ export function StaffMetrics({ requests, isLoading = false }: StaffMetricsProps)
   ).length;
 
   const overdueCount = requests.filter((r) => {
-    if (r.status === "RESOLVED" || r.status === "CLOSED" || r.status === "REJECTED") {
+    if (
+      r.status === "RESOLVED" ||
+      r.status === "CLOSED" ||
+      r.status === "REJECTED"
+    ) {
       return false;
     }
     if (!r.resolutionDueAt) return false;
@@ -126,7 +135,10 @@ export function StaffMetrics({ requests, isLoading = false }: StaffMetricsProps)
               {urgentCount}
             </div>
             {urgentCount > 0 ? (
-              <Badge variant="warning" className="text-[11px] font-semibold animate-pulse">
+              <Badge
+                variant="warning"
+                className="text-[11px] font-semibold animate-pulse"
+              >
                 Needs Triage
               </Badge>
             ) : (
@@ -206,7 +218,9 @@ export function StaffMetrics({ requests, isLoading = false }: StaffMetricsProps)
           <div className="flex items-baseline justify-between">
             <div
               className={`text-3xl font-extrabold tracking-tight ${
-                overdueCount > 0 ? "text-destructive" : "text-emerald-600 dark:text-emerald-400"
+                overdueCount > 0
+                  ? "text-destructive"
+                  : "text-emerald-600 dark:text-emerald-400"
               }`}
             >
               {overdueCount > 0 ? overdueCount : "100%"}

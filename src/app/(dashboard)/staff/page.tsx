@@ -1,22 +1,20 @@
 "use client";
 
 import {
-  AlertCircle,
   AlertTriangle,
   ArrowRight,
   Camera,
-  CheckCircle2,
   Clock,
   HardHat,
   RefreshCw,
   Wrench,
 } from "lucide-react";
 import Link from "next/link";
+import { RecentAssignedList } from "@/components/modules/staff/recent-assigned-list";
+import { StaffMetrics } from "@/components/modules/staff/staff-metrics";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { RecentAssignedList } from "@/components/modules/staff/recent-assigned-list";
-import { StaffMetrics } from "@/components/modules/staff/staff-metrics";
 import { useGetAllRequests, useGetMe } from "@/hooks";
 
 export default function StaffOverviewPage() {
@@ -102,8 +100,8 @@ export default function StaffOverviewPage() {
                 Awaiting Field Triage
               </p>
               <p className="text-xs text-amber-800 dark:text-amber-300/90 mt-0.5">
-                Urgent complaints require initial status response or field inspection
-                within SLA target.
+                Urgent complaints require initial status response or field
+                inspection within SLA target.
               </p>
             </div>
           </div>
@@ -151,7 +149,8 @@ export default function StaffOverviewPage() {
                     Acknowledge Case
                   </p>
                   <p className="text-muted-foreground mt-0.5">
-                    Review assigned details and citizen notes before heading to location.
+                    Review assigned details and citizen notes before heading to
+                    location.
                   </p>
                 </div>
               </div>
@@ -165,7 +164,8 @@ export default function StaffOverviewPage() {
                     Mark "In Progress" Onsite
                   </p>
                   <p className="text-muted-foreground mt-0.5">
-                    Transition ticket status when work commences to update citizen and stop SLA response timer.
+                    Transition ticket status when work commences to update
+                    citizen and stop SLA response timer.
                   </p>
                 </div>
               </div>
@@ -179,7 +179,8 @@ export default function StaffOverviewPage() {
                     Attach Photo Verification
                   </p>
                   <p className="text-muted-foreground mt-0.5">
-                    Upload completion pictures or resolution log prior to marking "Resolved".
+                    Upload completion pictures or resolution log prior to
+                    marking "Resolved".
                   </p>
                 </div>
               </div>
