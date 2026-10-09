@@ -25,12 +25,16 @@ import {
   AttachmentGallery,
   SlaCountdownBadge,
   TimelineStepper,
-  WorkUpdateFeed,
 } from "@/components/modules/requests";
+import {
+  StaffWorkUpdateFeed,
+  StatusUpdateDialog,
+} from "@/components/modules/staff";
 import { Button } from "@/components/ui/button";
 import { PriorityBadge, StatusBadge } from "@/components/ui/status-badge";
 import { toast } from "@/components/ui/toast";
 import {
+  useGetMe,
   useGetServiceRequestById,
   useRequestFeedback,
   useRequestTimeline,
@@ -316,6 +320,12 @@ export default function RequestDetailsPage() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
   const [localFeedback, setLocalFeedback] = useState<Feedback | null>(null);
+  const [statusModalOpen, setStatusModalOpen] = useState(false);
+
+  const { data: meData } = useGetMe();
+  const userRole = meData?.data?.role;
+  const isStaffOrAdmin =
+    userRole === "STAFF" || userRole === "ADMIN" || userRole === "SUPER_ADMIN";
 
   const rawId = params?.id;
   const requestId = Array.isArray(rawId) ? rawId[0] : (rawId as string) || "";
@@ -566,6 +576,18 @@ export default function RequestDetailsPage() {
             />
             <span className="hidden sm:inline">Refresh</span>
           </Button>
+
+          {isStaffOrAdmin && (
+            <Button
+              size="sm"
+              onClick={() => setStatusModalOpen(true)}
+              className="gap-1.5 text-xs bg-primary text-primary-foreground hover:bg-primary/90"
+              title="Update casework status"
+            >
+              <Wrench className="size-3.5" />
+              <span>Update Status</span>
+            </Button>
+          )}
         </div>
       </div>
 
@@ -678,25 +700,12 @@ export default function RequestDetailsPage() {
           </div>
 
           {/* Field Technician Work Updates Feed */}
-          <div className="rounded-lg border bg-card p-6 shadow-sm space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-base font-bold text-foreground flex items-center gap-2">
-                  <Wrench className="size-4 text-primary" />
-                  Field Inspection & Technician Reports
-                </h2>
-                <p className="text-xs text-muted-foreground">
-                  Real-time notes, equipment dispatched, and progress logs from
-                  assigned city staff.
-                </p>
-              </div>
-              <span className="font-mono text-xs text-muted-foreground">
-                {workUpdates.length} updates
-              </span>
-            </div>
-
-            <WorkUpdateFeed updates={workUpdates} />
-          </div>
+          <StaffWorkUpdateFeed
+            requestId={request.id}
+            requestNo={request.requestNo}
+            initialUpdates={workUpdates}
+            allowPost={isStaffOrAdmin}
+          />
 
           {/* Citizen Feedback Rating Section (when resolved or closed) */}
           {isResolved && (
@@ -893,6 +902,14 @@ export default function RequestDetailsPage() {
           setLocalFeedback(created);
           refetchFeedback();
         }}
+      />
+
+      {/* Staff Status Transition Dialog */}
+      <StatusUpdateDialog
+        request={request}
+        open={statusModalOpen}
+        onOpenChange={setStatusModalOpen}
+        onSuccess={() => handleManualRefresh()}
       />
     </div>
   );

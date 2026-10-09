@@ -5,7 +5,6 @@ import {
   getAllWards,
   getMyServiceRequests,
   getServiceRequestById,
-  uploadRequestAttachment,
 } from "@/api";
 import type { CreateServiceRequestPayload, RequestFilterParams } from "@/types";
 
@@ -47,27 +46,6 @@ export function useGetServiceRequestById(id: string) {
     queryKey: ["request", id],
     queryFn: () => getServiceRequestById(id),
     enabled: !!id,
-  });
-}
-
-export function useUploadAttachment() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: ({
-      requestId,
-      file,
-      purpose,
-    }: {
-      requestId: string;
-      file: File;
-      purpose?: "EVIDENCE" | "PHOTO" | "DOCUMENT" | "RECEIPT" | "OTHER";
-    }) => uploadRequestAttachment(requestId, file, purpose),
-    onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: ["request", variables.requestId],
-      });
-    },
   });
 }
 

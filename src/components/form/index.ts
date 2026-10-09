@@ -5,3 +5,4 @@ export * from "./login-form";
 export * from "./profile-form";
 export * from "./register-form";
 export * from "./verify-otp-modal";
+export * from "./work-update-form";
