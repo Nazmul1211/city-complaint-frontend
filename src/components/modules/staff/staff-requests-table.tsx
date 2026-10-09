@@ -9,10 +9,13 @@ import {
   Phone,
   SearchX,
   User,
+  Wrench,
 } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 import { SlaCountdownBadge } from "@/components/modules/requests/sla-countdown-badge";
 import { PriorityTag } from "@/components/modules/staff/priority-tag";
+import { StatusUpdateDialog } from "@/components/modules/staff/status-update-dialog";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StatusBadge } from "@/components/ui/status-badge";
@@ -59,6 +62,9 @@ export function StaffRequestsTable({
   sortOrder = "desc",
   onToggleUrgencySort,
 }: StaffRequestsTableProps) {
+  const [selectedForStatus, setSelectedForStatus] =
+    useState<ServiceRequest | null>(null);
+
   if (isLoading) {
     return (
       <div className="overflow-hidden rounded-lg border bg-card">
@@ -276,17 +282,28 @@ export function StaffRequestsTable({
 
                     {/* 7. Actions */}
                     <TableCell className="text-right">
-                      <Link href={`/dashboard/requests/${req.id}`}>
+                      <div className="flex items-center justify-end gap-1.5">
                         <Button
-                          variant="ghost"
+                          variant="outline"
                           size="xs"
-                          className="gap-1 text-xs hover:text-primary hover:bg-primary/10"
+                          onClick={() => setSelectedForStatus(req)}
+                          className="gap-1 text-xs hover:border-primary hover:text-primary"
                         >
-                          <FileText className="size-3" />
-                          Triage
-                          <ArrowRight className="size-3" />
+                          <Wrench className="size-3" />
+                          Status
                         </Button>
-                      </Link>
+                        <Link href={`/dashboard/requests/${req.id}`}>
+                          <Button
+                            variant="ghost"
+                            size="xs"
+                            className="gap-1 text-xs hover:text-primary hover:bg-primary/10"
+                          >
+                            <FileText className="size-3" />
+                            Triage
+                            <ArrowRight className="size-3" />
+                          </Button>
+                        </Link>
+                      </div>
                     </TableCell>
                   </TableRow>
                 );
@@ -306,6 +323,15 @@ export function StaffRequestsTable({
           />
         </div>
       )}
+
+      {/* Status Update Dialog */}
+      <StatusUpdateDialog
+        request={selectedForStatus}
+        open={!!selectedForStatus}
+        onOpenChange={(open) => {
+          if (!open) setSelectedForStatus(null);
+        }}
+      />
     </div>
   );
 }
