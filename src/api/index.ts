@@ -1,5 +1,6 @@
 export * from "./assignment.api";
 export * from "./attachment.api";
+export * from "./audit.api";
 export * from "./auth.api";
 export * from "./category.api";
 export * from "./department.api";
@@ -9,4 +10,5 @@ export * from "./routing.api";
 export * from "./status.api";
 export * from "./timeline.api";
 export * from "./user.api";
+export * from "./ward.api";
 export * from "./work-update.api";

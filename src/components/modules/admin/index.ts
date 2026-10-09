@@ -1,4 +1,5 @@
 export * from "./assign-staff-modal";
+export * from "./audit-log-viewer";
 export * from "./category-form-dialog";
 export * from "./complaints-trend-chart";
 export * from "./department-form-dialog";
@@ -7,3 +8,5 @@ export * from "./route-department-modal";
 export * from "./sla-policy-dialog";
 export * from "./stat-card";
 export * from "./status-distribution-chart";
+export * from "./users-table";
+export * from "./ward-table";

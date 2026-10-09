@@ -2,7 +2,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createServiceRequest,
   getAllServiceRequests,
-  getAllWards,
   getMyServiceRequests,
   getServiceRequestById,
 } from "@/api";
@@ -46,12 +45,5 @@ export function useGetServiceRequestById(id: string) {
     queryKey: ["request", id],
     queryFn: () => getServiceRequestById(id),
     enabled: !!id,
-  });
-}
-
-export function useGetWards(params?: { city?: string; isActive?: boolean }) {
-  return useQuery({
-    queryKey: ["wards", params],
-    queryFn: () => getAllWards(params),
   });
 }

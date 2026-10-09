@@ -41,3 +41,9 @@ export function getAllUsers(params?: UserFilterParams) {
     params,
   });
 }
+
+export function adminDeleteUser(id: string) {
+  return apiClient<ApiResponse<null>>(`/users/${id}`, {
+    method: "DELETE",
+  });
+}

@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import {
+  adminDeleteUser,
   deleteMyAccount,
   getAllUsers,
   type UserFilterParams,
@@ -106,5 +107,28 @@ export function useGetUsers(params?: UserFilterParams) {
   return useQuery({
     queryKey: ["users", params],
     queryFn: () => getAllUsers(params),
+  });
+}
+
+export function useAdminDeleteUser() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => adminDeleteUser(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      toast.add({
+        title: "User Deactivated",
+        description: "The user account has been deactivated successfully.",
+      });
+    },
+    onError: (err: ApiError) => {
+      const message =
+        err?.data?.message || err?.message || "Failed to deactivate user";
+      toast.add({
+        title: "Action Failed",
+        description: message,
+      });
+    },
   });
 }
