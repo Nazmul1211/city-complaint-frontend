@@ -3,6 +3,7 @@ import type {
   ApiResponse,
   CreateServiceRequestPayload,
   MediaAttachment,
+  RequestFilterParams,
   ServiceRequest,
   Ward,
 } from "@/types";
@@ -11,6 +12,12 @@ export function createServiceRequest(payload: CreateServiceRequestPayload) {
   return apiClient<ApiResponse<ServiceRequest>>("/service-requests", {
     method: "POST",
     body: payload,
+  });
+}
+
+export function getAllServiceRequests(params?: RequestFilterParams) {
+  return apiClient<ApiResponse<ServiceRequest[]>>("/service-requests", {
+    params,
   });
 }
 

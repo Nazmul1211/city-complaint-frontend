@@ -148,6 +148,17 @@ export interface ServiceRequest {
   updatedAt: string;
   category?: Category;
   ward?: Ward;
+  reportedLocation?: {
+    id?: string;
+    wardId?: string;
+    addressLine?: string;
+    landmark?: string | null;
+    latitude?: number | null;
+    longitude?: number | null;
+    ward?: Ward;
+  };
+  currentDepartment?: Department;
+  currentDepartmentId?: string;
   citizen?: {
     id: string;
     userId: string;
@@ -172,3 +183,18 @@ export interface CreateServiceRequestPayload {
   latitude?: number;
   longitude?: number;
 }
+
+export interface RequestFilterParams {
+  page?: number;
+  limit?: number;
+  status?: string;
+  priority?: string;
+  categoryId?: string;
+  departmentId?: string;
+  wardId?: string;
+  citizenId?: string;
+  searchTerm?: string;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+}
+

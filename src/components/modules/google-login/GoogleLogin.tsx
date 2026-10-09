@@ -113,6 +113,33 @@ export default function GoogleLoginComponent({
             return;
           }
 
+          if (
+            message.toLowerCase().includes("blocked") ||
+            message.toLowerCase().includes("suspended")
+          ) {
+            toast.add({
+              title: "Account Blocked",
+              description:
+                "This account is currently blocked or suspended. Please contact the city administration.",
+              type: "error",
+            });
+            return;
+          }
+
+          if (
+            message.toLowerCase().includes("duplicate key") ||
+            message.toLowerCase().includes("already exists") ||
+            message.toLowerCase().includes("unique constraint")
+          ) {
+            toast.add({
+              title: "Account Conflict",
+              description:
+                "An account with this email already exists. Please log in using your email and password.",
+              type: "warning",
+            });
+            return;
+          }
+
           toast.add({
             title: "Google Sign-In Failed",
             description: message,

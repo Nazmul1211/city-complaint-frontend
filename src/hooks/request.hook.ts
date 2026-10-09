@@ -1,12 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createServiceRequest,
+  getAllServiceRequests,
   getAllWards,
   getMyServiceRequests,
   getServiceRequestById,
   uploadRequestAttachment,
 } from "@/api";
-import type { CreateServiceRequestPayload } from "@/types";
+import type { CreateServiceRequestPayload, RequestFilterParams } from "@/types";
 
 export function useCreateServiceRequest() {
   const queryClient = useQueryClient();
@@ -18,6 +19,13 @@ export function useCreateServiceRequest() {
       queryClient.invalidateQueries({ queryKey: ["my-requests"] });
       queryClient.invalidateQueries({ queryKey: ["requests"] });
     },
+  });
+}
+
+export function useGetAllRequests(params?: RequestFilterParams) {
+  return useQuery({
+    queryKey: ["requests", params],
+    queryFn: () => getAllServiceRequests(params),
   });
 }
 

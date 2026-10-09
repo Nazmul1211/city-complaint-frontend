@@ -115,11 +115,46 @@ export default function LoginForm() {
             handleSuccessfulAuth(res?.data?.user?.role);
           },
           onError: (err: Error) => {
+            const message =
+              err?.message ||
+              "Invalid credentials. Please verify your email and password.";
+
+            // If account was created with Google (no password set)
+            if (
+              message.toLowerCase().includes("registered with google") ||
+              message.toLowerCase().includes("login with google")
+            ) {
+              toast.add({
+                title: "Google Account Detected",
+                description:
+                  "This account was registered via Google. Please use the 'Continue with Google' button below to sign in.",
+                type: "warning",
+              });
+              setActiveDemoRole(null);
+              return;
+            }
+
+            // If email is not verified yet
+            if (
+              message.toLowerCase().includes("email not verified") ||
+              message.toLowerCase().includes("not verified")
+            ) {
+              toast.add({
+                title: "Email Verification Required",
+                description:
+                  "Your account email has not been verified yet. Please enter the OTP sent to your email.",
+                type: "warning",
+              });
+              setActiveDemoRole(null);
+              router.push(
+                `/verify-email?email=${encodeURIComponent(value.email)}`,
+              );
+              return;
+            }
+
             toast.add({
               title: "Login Failed",
-              description:
-                err?.message ||
-                "Invalid credentials. Please verify your email and password.",
+              description: message,
               type: "error",
             });
             setActiveDemoRole(null);
