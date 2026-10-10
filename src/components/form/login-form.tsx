@@ -191,29 +191,16 @@ export default function LoginForm() {
             }
             handleSuccessfulAuth(res?.data?.user?.role || match?.role);
           },
-          onError: () => {
-            // Graceful evaluation fallback if backend rejects demo password or is offline
-            if (typeof window !== "undefined") {
-              const demoUser = {
-                id: `demo-${match?.role?.toLowerCase() || "citizen"}-1`,
-                name: match?.name || "Demo User",
-                email: match?.email || email,
-                role: match?.role || "CITIZEN",
-                status: "ACTIVE" as const,
-                emailVerified: true,
-                avatarUrl: null,
-                avatarPublicId: null,
-                phone: null,
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
-              };
-              localStorage.setItem("demo_user", JSON.stringify(demoUser));
-              setAuthCookies(
-                `demo-token-${match?.role || "CITIZEN"}`,
-                `demo-refresh-${match?.role || "CITIZEN"}`,
-              );
-            }
-            handleSuccessfulAuth(match?.role || "CITIZEN");
+          onError: (err: Error) => {
+            setActiveDemoRole(null);
+            const message =
+              err?.message ||
+              "Demo sign in failed. Please check network or credentials.";
+            toast.add({
+              title: "Sign In Failed",
+              description: message,
+              type: "error",
+            });
           },
         },
       );
