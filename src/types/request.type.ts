@@ -187,6 +187,14 @@ export interface ServiceRequest {
   };
   attachments?: MediaAttachment[];
   workUpdates?: WorkUpdate[];
+  assignedTechnicianId?: string | null;
+  assignments?: Array<{
+    id: string;
+    requestId?: string;
+    assigneeId: string;
+    releasedAt?: string | null;
+    assignee?: User;
+  }>;
 }
 
 export interface CreateServiceRequestPayload {
