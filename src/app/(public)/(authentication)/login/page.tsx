@@ -50,7 +50,7 @@ export default function LoginPage() {
       {/* Right Hero Column */}
       <div className="relative hidden bg-muted lg:block overflow-hidden">
         <Image
-          src="/ui-image/citycareSignup.jpg"
+          src="/ui-image/citycareLogin.jpg"
           alt="CityCare Civic Infrastructure"
           fill
           priority
