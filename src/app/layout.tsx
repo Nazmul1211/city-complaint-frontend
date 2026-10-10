@@ -73,6 +73,12 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  appleWebApp: {
+    title: "CityCare",
+  },
+  other: {
+    "apple-mobile-web-app-title": "CityCare",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
