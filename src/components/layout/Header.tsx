@@ -2,7 +2,6 @@
 
 import { useQueryClient } from "@tanstack/react-query";
 import {
-  Building2,
   ChevronRight,
   LogOut,
   Menu,
@@ -10,6 +9,7 @@ import {
   User as UserIcon,
   X,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -74,8 +74,15 @@ export default function Header() {
           href="/"
           className="flex items-center gap-2.5 transition-opacity hover:opacity-90"
         >
-          <div className="flex size-9 items-center justify-center rounded-md bg-primary text-primary-foreground shadow-sm">
-            <Building2 className="size-5" />
+          <div className="relative flex size-9 items-center justify-center overflow-hidden rounded-lg border border-border/60 bg-white p-0.5 shadow-xs shrink-0">
+            <Image
+              src="/citycare_logo.jpeg"
+              alt="CityCare Logo"
+              width={36}
+              height={36}
+              className="size-full object-contain"
+              priority
+            />
           </div>
           <div className="flex flex-col">
             <span className="text-base font-bold tracking-tight text-foreground">

@@ -213,8 +213,8 @@ export function NotificationPopover() {
       >
         <Bell className="size-4" />
         {unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground shadow-xs animate-pulse">
-            {unreadCount > 9 ? "9+" : unreadCount}
+          <span className="absolute -top-1.5 -right-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-extrabold font-mono text-white shadow-sm ring-2 ring-background pointer-events-none">
+            {unreadCount > 99 ? "99+" : unreadCount}
           </span>
         )}
       </PopoverTrigger>

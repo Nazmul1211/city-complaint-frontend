@@ -1,6 +1,6 @@
 "use client";
 
-import { Building2 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -37,8 +37,14 @@ export function DashboardSidebar({ userRole }: { userRole: UserRole }) {
           href="/"
           className="flex items-center gap-2.5 font-bold tracking-tight text-foreground hover:opacity-90"
         >
-          <div className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <Building2 className="size-4" />
+          <div className="relative flex size-8 items-center justify-center overflow-hidden rounded-lg border border-border/60 bg-white p-0.5 shadow-xs shrink-0">
+            <Image
+              src="/citycare_logo.jpeg"
+              alt="CityCare Logo"
+              width={32}
+              height={32}
+              className="size-full object-contain"
+            />
           </div>
           <span className="text-base font-semibold">CityCare</span>
         </Link>

@@ -1,11 +1,5 @@
-import {
-  Building2,
-  FileText,
-  LifeBuoy,
-  MapPin,
-  Phone,
-  Shield,
-} from "lucide-react";
+import { FileText, LifeBuoy, MapPin, Phone, Shield } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 export default function Footer() {
@@ -18,8 +12,14 @@ export default function Footer() {
           {/* Column 1: Brand & Description */}
           <div className="space-y-3 lg:col-span-1">
             <Link href="/" className="flex items-center gap-2.5">
-              <div className="flex size-8 items-center justify-center rounded-lg bg-[#0284c7] text-white shadow-sm">
-                <Building2 className="size-4" />
+              <div className="relative flex size-8 items-center justify-center overflow-hidden rounded-lg border border-border/60 bg-white p-0.5 shadow-xs shrink-0">
+                <Image
+                  src="/citycare_logo.jpeg"
+                  alt="CityCare Logo"
+                  width={32}
+                  height={32}
+                  className="size-full object-contain"
+                />
               </div>
               <div className="flex flex-col">
                 <span className="text-base font-extrabold tracking-tight text-foreground">
@@ -87,9 +87,7 @@ export default function Footer() {
 
           {/* Column 3: Portal Access */}
           <div className="space-y-3">
-            <h3 className="text-xs font-bold text-foreground">
-              Portal Access
-            </h3>
+            <h3 className="text-xs font-bold text-foreground">Portal Access</h3>
             <ul className="space-y-2 text-xs text-muted-foreground">
               <li>
                 <Link
