@@ -1,4 +1,6 @@
 import {
+  CityServicesSection,
+  GovernanceAnalyticsSection,
   HeroSection,
   HowItWorks,
   RecentResolvedShowcase,
@@ -12,6 +14,8 @@ export default function HomePage() {
       <StatsCounter />
       <HowItWorks />
       <RecentResolvedShowcase />
+      <CityServicesSection />
+      <GovernanceAnalyticsSection />
     </div>
   );
 }
