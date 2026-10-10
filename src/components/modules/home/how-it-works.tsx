@@ -1,148 +1,109 @@
 import {
   ArrowRight,
   Camera,
-  CheckCircle2,
   GitBranch,
-  ShieldCheck,
-  Star,
+  ThumbsUp,
   Wrench,
 } from "lucide-react";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
 
-interface Step {
-  step: string;
+interface StepItem {
+  num: string;
   title: string;
-  subtitle: string;
   description: string;
-  tag: string;
   icon: typeof Camera;
 }
 
-const STEPS: Step[] = [
+const STEPS: StepItem[] = [
   {
-    step: "01",
-    title: "Report an Issue",
-    subtitle: "Citizen Intake",
+    num: "01",
+    title: "Report an issue",
     description:
-      "Select your municipal category, pinpoint your street location or ward number, and upload clear photographic proof of the issue.",
-    tag: "Mobile & Web",
+      "Select your municipal category, location, and add photos showing the problem.",
     icon: Camera,
   },
   {
-    step: "02",
-    title: "Auto-Route & SLA",
-    subtitle: "Department Dispatch",
+    num: "02",
+    title: "Auto-route to department",
     description:
-      "Our system verifies ward jurisdiction and instantly assigns the case to the responsible municipal desk with an SLA deadline.",
-    tag: "24–48h Target",
+      "Your complaint is automatically routed to the responsible department with an SLA deadline.",
     icon: GitBranch,
   },
   {
-    step: "03",
-    title: "Field Repair",
-    subtitle: "Technician Execution",
+    num: "03",
+    title: "Field Inspection & repair",
     description:
-      "Assigned field crews inspect the site, complete physical repairs, and record timestamped work updates with photo evidence.",
-    tag: "GPS Tracked",
+      "Assigned technicians inspect the issue, perform required repairs, and upload progress.",
     icon: Wrench,
   },
   {
-    step: "04",
-    title: "Verify & Rate",
-    subtitle: "Citizen Sign-off",
+    num: "04",
+    title: "Verify resolution",
     description:
-      "Review the verified 'After' photograph, confirm problem resolution, and rate the municipal service team's performance.",
-    tag: "Quality Audit",
-    icon: Star,
+      "You receive a notification with photo proof. Rate the resolution and help improve city services.",
+    icon: ThumbsUp,
   },
 ];
 
 export function HowItWorks() {
   return (
-    <section className="relative border-b bg-background py-16 md:py-24">
+    <section className="border-b bg-background py-14 md:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="mx-auto max-w-2xl text-center">
-          <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/5 px-3 py-0.5 text-xs font-semibold text-primary">
-            <ShieldCheck className="size-3.5" />
-            Transparent Civic Pipeline
-          </div>
-          <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-            How CityCare Resolves Your Complaint
+        {/* Left-Aligned Header */}
+        <div className="space-y-1">
+          <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+            How CityCare works
           </h2>
-          <p className="mt-3 text-base text-muted-foreground">
-            A 4-step accountable municipal process designed for fast triage,
-            strict statutory SLA turnaround, and verified photographic closure.
+          <p className="text-sm text-muted-foreground">
+            From the first report to verified resolution, every step stays visible.
           </p>
         </div>
 
-        {/* 4-Step Pipeline Container */}
-        <div className="relative mt-16">
-          {/* Desktop Connecting Bar behind steps */}
+        {/* 4 Connected Steps */}
+        <div className="relative mt-12">
+          {/* Continuous Horizontal Blue Line across the 4 nodes on desktop */}
           <div
             aria-hidden="true"
-            className="absolute left-12 right-12 top-10 hidden h-0.5 bg-gradient-to-r from-sky-500/30 via-blue-500/30 to-emerald-500/30 lg:block"
+            className="absolute left-10 right-10 top-3.5 hidden h-0.5 bg-[#0284c7]/30 dark:bg-[#38bdf8]/30 lg:block"
           />
 
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {STEPS.map((step, idx) => {
               const Icon = step.icon;
+              const isLast = idx === STEPS.length - 1;
+
               return (
-                <div
-                  key={step.step}
-                  className="group relative flex flex-col rounded-2xl border border-slate-200/90 bg-card p-6 shadow-sm transition-all hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900/70"
-                >
-                  {/* Step Header with Number + Icon */}
-                  <div className="flex items-center justify-between">
-                    <div className="relative flex size-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
-                      <Icon className="size-6" />
+                <div key={step.num} className="relative flex flex-col items-start">
+                  {/* Numbered Pill on the line */}
+                  <div className="z-10 flex h-7 items-center justify-center rounded-full border border-[#0284c7] bg-card px-2.5 font-mono text-xs font-bold text-[#0284c7] shadow-sm dark:border-[#38bdf8] dark:bg-slate-900 dark:text-[#38bdf8]">
+                    {step.num}
+                  </div>
+
+                  {/* Icon + Step Info */}
+                  <div className="mt-5 w-full">
+                    <div className="flex items-center justify-between">
+                      <div className="flex size-12 items-center justify-center rounded-xl bg-sky-500/10 text-[#0284c7] dark:bg-sky-500/15 dark:text-[#38bdf8]">
+                        <Icon className="size-6" />
+                      </div>
+
+                      {/* Right connecting arrow for desktop */}
+                      {!isLast && (
+                        <div className="hidden text-muted-foreground/40 lg:block">
+                          <ArrowRight className="size-4" />
+                        </div>
+                      )}
                     </div>
-                    <span className="font-mono text-2xl font-black text-slate-300 dark:text-slate-700 transition-colors group-hover:text-primary">
-                      {step.step}
-                    </span>
-                  </div>
 
-                  {/* Subtitle tag */}
-                  <div className="mt-5 flex items-center gap-2">
-                    <span className="rounded bg-muted px-2 py-0.5 text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
-                      {step.tag}
-                    </span>
-                    <span className="text-xs text-muted-foreground font-medium">
-                      {step.subtitle}
-                    </span>
-                  </div>
-
-                  {/* Title & Description */}
-                  <h3 className="mt-2 text-lg font-bold text-foreground">
-                    {step.title}
-                  </h3>
-                  <p className="mt-2 text-xs leading-relaxed text-muted-foreground sm:text-sm">
-                    {step.description}
-                  </p>
-
-                  {/* Step Footer Checkmark */}
-                  <div className="mt-6 flex items-center gap-1.5 border-t pt-3 text-xs font-medium text-emerald-600 dark:text-emerald-400">
-                    <CheckCircle2 className="size-3.5 shrink-0" />
-                    <span>Stage {idx + 1} Audited</span>
+                    <h3 className="mt-4 text-base font-bold text-foreground">
+                      {step.title}
+                    </h3>
+                    <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
+                      {step.description}
+                    </p>
                   </div>
                 </div>
               );
             })}
           </div>
-        </div>
-
-        {/* Bottom CTA for Pipeline */}
-        <div className="mt-12 flex flex-col items-center justify-center gap-4 text-center sm:flex-row">
-          <p className="text-sm text-muted-foreground">
-            Ready to lodge an issue in your ward? Triage begins within 60 minutes.
-          </p>
-          <Link href="/dashboard/submit-request">
-            <Button size="sm" className="gap-2 font-semibold">
-              File a Complaint
-              <ArrowRight className="size-4" />
-            </Button>
-          </Link>
         </div>
       </div>
     </section>

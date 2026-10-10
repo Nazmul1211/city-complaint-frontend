@@ -1,5 +1,6 @@
 import {
   CityServicesSection,
+  CtaBannerSection,
   GovernanceAnalyticsSection,
   HeroSection,
   HowItWorks,
@@ -16,6 +17,7 @@ export default function HomePage() {
       <RecentResolvedShowcase />
       <CityServicesSection />
       <GovernanceAnalyticsSection />
+      <CtaBannerSection />
     </div>
   );
 }

@@ -1,55 +1,43 @@
 "use client";
 
 import {
-  Activity,
-  AlertOctagon,
-  BarChart3,
-  Building,
-  CheckCircle2,
-  Clock,
-  ExternalLink,
-  Flame,
-  PhoneCall,
-  Shield,
-  Sparkles,
+  ArrowRight,
+  ChevronDown,
+  ShieldCheck,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
   Bar,
   BarChart,
   CartesianGrid,
-  Legend,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ThemeAdaptiveImage } from "@/components/ui/theme-adaptive-image";
 
 interface WardData {
   ward: string;
-  filed: number;
   resolved: number;
 }
 
 const WARD_METRICS: WardData[] = [
-  { ward: "W01", filed: 140, resolved: 135 },
-  { ward: "W02", filed: 120, resolved: 114 },
-  { ward: "W03", filed: 165, resolved: 158 },
-  { ward: "W04", filed: 95, resolved: 90 },
-  { ward: "W05", filed: 180, resolved: 172 },
-  { ward: "W06", filed: 110, resolved: 104 },
-  { ward: "W07", filed: 210, resolved: 201 },
-  { ward: "W08", filed: 175, resolved: 168 },
-  { ward: "W09", filed: 130, resolved: 122 },
-  { ward: "W10", filed: 190, resolved: 182 },
-  { ward: "W11", filed: 145, resolved: 139 },
-  { ward: "W12", filed: 230, resolved: 221 },
+  { ward: "W01", resolved: 90 },
+  { ward: "W02", resolved: 110 },
+  { ward: "W04", resolved: 120 },
+  { ward: "W05", resolved: 140 },
+  { ward: "W06", resolved: 105 },
+  { ward: "W07", resolved: 95 },
+  { ward: "W08", resolved: 130 },
+  { ward: "W09", resolved: 150 },
+  { ward: "W10", resolved: 115 },
+  { ward: "W11", resolved: 135 },
+  { ward: "W12", resolved: 100 },
 ];
 
 export function GovernanceAnalyticsSection() {
@@ -60,297 +48,159 @@ export function GovernanceAnalyticsSection() {
   }, []);
 
   return (
-    <section className="relative border-b bg-muted/10 py-16 md:py-24">
+    <section className="border-b bg-background py-10 md:py-14">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <div className="mx-auto max-w-3xl text-center">
-          <div className="inline-flex items-center gap-1.5 rounded-full border border-sky-200 bg-sky-50 px-3 py-0.5 text-xs font-semibold text-sky-800 dark:border-sky-900 dark:bg-sky-950/60 dark:text-sky-300">
-            <Activity className="size-3.5" />
-            Civic Transparency Index
-          </div>
-          <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-            A City That Shows Its Work
-          </h2>
-          <p className="mt-2 text-base text-muted-foreground">
-            Audited municipal performance metrics across all 54 administrative
-            wards, statutory turnaround compliance, and emergency assistance channels.
-          </p>
-        </div>
+        {/* 3-Column Section with Synchronized Matching Heights */}
+        <div className="grid grid-cols-1 items-stretch gap-5 lg:grid-cols-12">
+          {/* Column 1: A city that shows its work with Cityscape Panorama Background */}
+          <div className="relative flex flex-col justify-between overflow-hidden rounded-xl border border-border shadow-sm p-6 lg:col-span-5 min-h-[260px] h-full">
+            {/* Background Image: Light Mode Cityscape */}
+            <div className="block dark:hidden absolute inset-0 size-full pointer-events-none">
+              <Image
+                src="/images/civic/cityscape-light.png"
+                alt="Civic Data Cityscape Panorama (Light)"
+                fill
+                priority
+                className="object-cover object-left"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-white/40" />
+            </div>
 
-        {/* Panoramic Cityscape Banner with Live Civic Annotations */}
-        <div className="relative mt-12 overflow-hidden rounded-2xl border border-slate-200/90 bg-slate-950 shadow-xl dark:border-slate-800">
-          <div className="relative aspect-[21/9] min-h-[260px] w-full">
-            <ThemeAdaptiveImage
-              lightSrc="/images/civic/cityscape-light.png"
-              darkSrc="/images/civic/cityscape-dark.png"
-              alt="Panoramic Citycare Skyline with Digital Governance Overlays"
-              fill
-              sizes="(max-width: 1280px) 100vw, 1280px"
-              className="object-cover object-center"
-            />
+            {/* Background Image: Dark Mode Cityscape */}
+            <div className="hidden dark:block absolute inset-0 size-full pointer-events-none">
+              <Image
+                src="/images/civic/cityscape-dark.png"
+                alt="Smart City Night Panorama (Dark)"
+                fill
+                priority
+                className="object-cover object-left"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-[#040813]/95 via-[#040813]/85 to-[#040813]/50" />
+            </div>
 
-            {/* Gradient Overlay for Contrast */}
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-slate-950/40" />
-
-            {/* Floating Banner Title & Civic Milestones */}
-            <div className="absolute inset-0 flex flex-col justify-between p-6 sm:p-8">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/60 px-3 py-1 font-mono text-xs font-semibold text-white backdrop-blur-md">
-                  <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
-                  MUNICIPAL WIDE TELEMETRY • LIVE
-                </span>
-                <span className="hidden font-mono text-xs text-slate-300 sm:inline-block">
-                  SLA STANDARD ISO-37120
-                </span>
+            {/* Foreground Content */}
+            <div className="relative z-10 space-y-3">
+              <div className="inline-flex items-center gap-1.5 rounded-full border border-sky-300/60 bg-sky-50/90 px-3 py-0.5 text-[11px] font-semibold text-sky-800 dark:border-sky-800 dark:bg-sky-950/60 dark:text-sky-300">
+                <ShieldCheck className="size-3" />
+                <span>DATA DRIVEN GOVERNANCE</span>
               </div>
 
-              {/* 4 Milestones Pinned Grid */}
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                <div className="rounded-xl border border-white/10 bg-slate-950/80 p-3 backdrop-blur-md">
-                  <div className="flex items-center gap-1.5 text-[11px] font-semibold text-sky-400">
-                    <Sparkles className="size-3" />
-                    Clean Streets
-                  </div>
-                  <p className="mt-1 text-lg font-extrabold text-white sm:text-xl">
-                    1,240+ Tons
-                  </p>
-                  <p className="text-[10px] text-slate-400">Solid waste collected</p>
-                </div>
+              <h2 className="text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl leading-tight">
+                A city that shows its work.
+              </h2>
 
-                <div className="rounded-xl border border-white/10 bg-slate-950/80 p-3 backdrop-blur-md">
-                  <div className="flex items-center gap-1.5 text-[11px] font-semibold text-amber-400">
-                    <Building className="size-3" />
-                    Better Roads
-                  </div>
-                  <p className="mt-1 text-lg font-extrabold text-white sm:text-xl">
-                    842 Repaired
-                  </p>
-                  <p className="text-[10px] text-slate-400">Asphalt patches sealed</p>
-                </div>
+              <p className="max-w-md text-xs leading-relaxed text-muted-foreground sm:text-sm">
+                Transparent governance through real data, real progress and real impact.
+                Explore SLA performance, ward activity and verified resolutions.
+              </p>
+            </div>
 
-                <div className="rounded-xl border border-white/10 bg-slate-950/80 p-3 backdrop-blur-md">
-                  <div className="flex items-center gap-1.5 text-[11px] font-semibold text-yellow-400">
-                    <Flame className="size-3" />
-                    Illumination
-                  </div>
-                  <p className="mt-1 text-lg font-extrabold text-white sm:text-xl">
-                    312 Relamped
-                  </p>
-                  <p className="text-[10px] text-slate-400">LED fixtures restored</p>
-                </div>
-
-                <div className="rounded-xl border border-white/10 bg-slate-950/80 p-3 backdrop-blur-md">
-                  <div className="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-400">
-                    <CheckCircle2 className="size-3" />
-                    Water Security
-                  </div>
-                  <p className="mt-1 text-lg font-extrabold text-white sm:text-xl">
-                    98.6%
-                  </p>
-                  <p className="text-[10px] text-slate-400">WASA pipeline integrity</p>
-                </div>
-              </div>
+            <div className="relative z-10 pt-4">
+              <Link href="/services">
+                <Button
+                  size="default"
+                  className="gap-2 rounded-lg bg-[#0284c7] px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-[#0369a1] dark:bg-[#0284c7] dark:hover:bg-[#0369a1]"
+                >
+                  View city performance
+                  <ArrowRight className="size-3.5" />
+                </Button>
+              </Link>
             </div>
           </div>
-        </div>
 
-        {/* 2-Column Operational Grid: Ward Performance Chart & SLA Compliance */}
-        <div className="mt-12 grid grid-cols-1 gap-8 lg:grid-cols-12">
-          {/* Left Column: Recharts Ward Bar Chart */}
-          <div className="lg:col-span-7">
-            <Card className="border border-slate-200/90 bg-card shadow-sm dark:border-slate-800 dark:bg-slate-900/80">
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-1">
-                    <CardTitle className="text-base font-bold text-foreground flex items-center gap-2">
-                      <BarChart3 className="size-4 text-primary" />
-                      Ward Resolution Output (W01 to W12)
-                    </CardTitle>
-                    <p className="text-xs text-muted-foreground">
-                      Monthly comparison of citizen complaints registered vs. verified repairs.
-                    </p>
-                  </div>
-                  <Badge variant="outline" className="font-mono text-xs">
-                    95.4% AVG
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent className="pt-4">
-                {isMounted ? (
-                  <div className="h-[280px] w-full">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart
-                        data={WARD_METRICS}
-                        margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
-                      >
-                        <CartesianGrid
-                          strokeDasharray="3 3"
-                          className="stroke-muted/40"
-                          vertical={false}
-                        />
-                        <XAxis
-                          dataKey="ward"
-                          tickLine={false}
-                          className="text-[11px] font-mono fill-muted-foreground"
-                        />
-                        <YAxis
-                          tickLine={false}
-                          className="text-[11px] font-mono fill-muted-foreground"
-                        />
-                        <Tooltip
-                          contentStyle={{
-                            backgroundColor: "var(--card)",
-                            borderColor: "var(--border)",
-                            borderRadius: "8px",
-                            fontSize: "12px",
-                            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-                          }}
-                        />
-                        <Legend
-                          wrapperStyle={{
-                            paddingTop: "12px",
-                            fontSize: "12px",
-                          }}
-                        />
-                        <Bar
-                          dataKey="filed"
-                          name="Reports Filed"
-                          fill="#38bdf8"
-                          radius={[4, 4, 0, 0]}
-                        />
-                        <Bar
-                          dataKey="resolved"
-                          name="Repairs Verified"
-                          fill="#10b981"
-                          radius={[4, 4, 0, 0]}
-                        />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
-                ) : (
-                  <div className="h-[280px] flex items-center justify-center">
-                    <Skeleton className="h-full w-full rounded-lg" />
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+          {/* Column 2: Cases Resolved by Ward Bar Chart Card */}
+          <div className="flex flex-col justify-between rounded-xl border border-border/80 bg-card p-5 shadow-sm dark:border-slate-800 dark:bg-[#0c1322] lg:col-span-4 min-h-[260px] h-full">
+            <div className="flex items-center justify-between pb-2">
+              <h3 className="text-xs font-bold text-foreground sm:text-sm">
+                Cases Resolved by Ward (Last 30 Days)
+              </h3>
+              <div className="flex items-center gap-1 rounded-md border border-border bg-muted/40 px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
+                <span>Last 30 days</span>
+                <ChevronDown className="size-3" />
+              </div>
+            </div>
+
+            <div className="h-[175px] w-full pt-1">
+              {isMounted ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={WARD_METRICS}
+                    margin={{ top: 8, right: 0, left: -28, bottom: -5 }}
+                  >
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      className="stroke-muted/30"
+                      vertical={false}
+                    />
+                    <XAxis
+                      dataKey="ward"
+                      tickLine={false}
+                      className="text-[9px] font-mono fill-muted-foreground"
+                    />
+                    <YAxis
+                      domain={[0, 150]}
+                      ticks={[0, 50, 100, 150]}
+                      tickLine={false}
+                      className="text-[9px] font-mono fill-muted-foreground"
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "var(--card)",
+                        borderColor: "var(--border)",
+                        borderRadius: "6px",
+                        fontSize: "11px",
+                        padding: "4px 8px",
+                      }}
+                    />
+                    <Bar
+                      dataKey="resolved"
+                      name="Cases Resolved"
+                      fill="#0284c7"
+                      radius={[2, 2, 0, 0]}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              ) : (
+                <Skeleton className="size-full rounded-md" />
+              )}
+            </div>
           </div>
 
-          {/* Right Column: SLA Compliance & Emergency Helplines */}
-          <div className="space-y-6 lg:col-span-5">
-            {/* SLA Gauge Breakdown Card */}
-            <Card className="border border-slate-200/90 bg-card shadow-sm dark:border-slate-800 dark:bg-slate-900/80">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base font-bold text-foreground flex items-center gap-2">
-                  <Clock className="size-4 text-emerald-500" />
-                  Statutory SLA Compliance
-                </CardTitle>
-                <p className="text-xs text-muted-foreground">
-                  Official municipal response timeline adherence for all active cases.
-                </p>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-semibold text-emerald-700 dark:text-emerald-400">
-                      On-Time Resolution (Within Target)
-                    </span>
-                    <span className="font-mono font-bold text-foreground">
-                      95.4%
-                    </span>
-                  </div>
-                  <div className="mt-1.5 h-2 w-full overflow-hidden rounded-full bg-muted">
-                    <div
-                      className="h-full rounded-full bg-emerald-500 transition-all duration-500"
-                      style={{ width: "95.4%" }}
-                    />
-                  </div>
-                </div>
+          {/* Column 3: SLA Performance Card */}
+          <div className="flex flex-col justify-between rounded-xl border border-border/80 bg-card p-5 shadow-sm dark:border-slate-800 dark:bg-[#0c1322] lg:col-span-3 min-h-[260px] h-full">
+            <h3 className="text-xs font-bold text-foreground sm:text-sm">
+              SLA Performance
+            </h3>
 
-                <div>
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-semibold text-amber-600 dark:text-amber-400">
-                      Resolved in Grace Period (+6 hrs)
-                    </span>
-                    <span className="font-mono font-bold text-foreground">
-                      3.1%
-                    </span>
-                  </div>
-                  <div className="mt-1.5 h-2 w-full overflow-hidden rounded-full bg-muted">
-                    <div
-                      className="h-full rounded-full bg-amber-500 transition-all duration-500"
-                      style={{ width: "3.1%" }}
-                    />
-                  </div>
+            <div className="space-y-4 my-auto py-2 text-xs">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="size-2 rounded-full bg-emerald-500" />
+                  <span className="text-muted-foreground">Resolved On Time</span>
                 </div>
-
-                <div>
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-semibold text-rose-600 dark:text-rose-400">
-                      Escalated to Zonal Mayor
-                    </span>
-                    <span className="font-mono font-bold text-foreground">
-                      1.5%
-                    </span>
-                  </div>
-                  <div className="mt-1.5 h-2 w-full overflow-hidden rounded-full bg-muted">
-                    <div
-                      className="h-full rounded-full bg-rose-500 transition-all duration-500"
-                      style={{ width: "1.5%" }}
-                    />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Emergency Hotline & Helpdesk Card */}
-            <Card className="border border-sky-200/80 bg-gradient-to-br from-sky-50/70 to-blue-50/40 p-5 shadow-sm dark:border-sky-900/50 dark:from-sky-950/30 dark:to-slate-900">
-              <div className="flex items-start gap-3">
-                <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-sky-600 text-white shadow-sm">
-                  <PhoneCall className="size-5" />
-                </div>
-                <div className="space-y-1">
-                  <h4 className="text-sm font-bold text-foreground">
-                    Direct Civic Helplines (24/7 Toll-Free)
-                  </h4>
-                  <p className="text-xs text-muted-foreground leading-relaxed">
-                    For life-threatening hazards, open high-voltage cables, or
-                    gas leak emergencies, dial emergency services immediately:
-                  </p>
-                </div>
+                <span className="font-bold text-foreground">95.4%</span>
               </div>
 
-              <div className="mt-4 grid grid-cols-2 gap-3">
-                <div className="rounded-lg border border-sky-200/60 bg-card p-2.5 text-center dark:border-slate-800">
-                  <span className="block text-[11px] font-medium text-muted-foreground">
-                    National Civic Info
-                  </span>
-                  <span className="block font-mono text-xl font-black text-primary">
-                    333
-                  </span>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="size-2 rounded-full bg-amber-500" />
+                  <span className="text-muted-foreground">Resolved (Late)</span>
                 </div>
-                <div className="rounded-lg border border-rose-200/60 bg-card p-2.5 text-center dark:border-slate-800">
-                  <span className="block text-[11px] font-medium text-muted-foreground">
-                    Emergency Hotline
-                  </span>
-                  <span className="block font-mono text-xl font-black text-rose-600 dark:text-rose-400">
-                    999
-                  </span>
-                </div>
+                <span className="font-bold text-foreground">3.1%</span>
               </div>
 
-              <div className="mt-4 flex items-center justify-between border-t border-sky-200/60 pt-3 dark:border-slate-800 text-xs">
-                <span className="text-muted-foreground">
-                  Online Triage Desk Active
-                </span>
-                <Link
-                  href="/dashboard/submit-request?priority=URGENT"
-                  className="font-semibold text-primary hover:underline inline-flex items-center gap-1"
-                >
-                  Lodge Urgent Ticket <ExternalLink className="size-3" />
-                </Link>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="size-2 rounded-full bg-rose-500" />
+                  <span className="text-muted-foreground">Overdue</span>
+                </div>
+                <span className="font-bold text-foreground">1.5%</span>
               </div>
-            </Card>
+            </div>
+
+            <div className="border-t pt-2 text-[11px] text-muted-foreground">
+              Official ISO-37120 Municipal Standard
+            </div>
           </div>
         </div>
       </div>

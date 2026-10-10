@@ -12,42 +12,40 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="w-full border-t bg-muted/30">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
-          {/* Brand & Mission */}
-          <div className="flex flex-col gap-3">
+    <footer className="w-full border-t bg-card py-12 dark:bg-slate-950">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-5">
+          {/* Column 1: Brand & Description */}
+          <div className="space-y-3 lg:col-span-1">
             <Link href="/" className="flex items-center gap-2.5">
-              <div className="flex size-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
+              <div className="flex size-8 items-center justify-center rounded-lg bg-[#0284c7] text-white shadow-sm">
                 <Building2 className="size-4" />
               </div>
-              <span className="text-base font-bold tracking-tight text-foreground">
-                CityCare
-              </span>
+              <div className="flex flex-col">
+                <span className="text-base font-extrabold tracking-tight text-foreground">
+                  CityCare
+                </span>
+                <span className="-mt-1 text-[10px] text-muted-foreground font-medium">
+                  Municipal Portal
+                </span>
+              </div>
             </Link>
             <p className="text-xs leading-relaxed text-muted-foreground">
               Official municipal service portal for public complaint filing,
               transparent department routing, and SLA-backed civic resolution.
             </p>
-            <div className="mt-2 flex items-center gap-2 rounded-md border border-border bg-background p-2.5 text-xs text-muted-foreground">
-              <Phone className="size-4 text-primary shrink-0" />
-              <div>
-                <p className="font-semibold text-foreground">Civic Hotline</p>
-                <p className="text-[11px]">Dial 333 or 999 for emergencies</p>
-              </div>
-            </div>
           </div>
 
-          {/* Citizen Services */}
-          <div className="flex flex-col gap-2.5">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-foreground">
+          {/* Column 2: Citizen Services */}
+          <div className="space-y-3">
+            <h3 className="text-xs font-bold text-foreground">
               Citizen Services
             </h3>
-            <ul className="flex flex-col gap-2 text-xs text-muted-foreground">
+            <ul className="space-y-2 text-xs text-muted-foreground">
               <li>
                 <Link
                   href="/dashboard/submit-request"
-                  className="hover:text-primary transition-colors"
+                  className="transition-colors hover:text-primary"
                 >
                   Report Civic Issue
                 </Link>
@@ -55,7 +53,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/track"
-                  className="hover:text-primary transition-colors"
+                  className="transition-colors hover:text-primary"
                 >
                   Track Complaint Status
                 </Link>
@@ -63,7 +61,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/services"
-                  className="hover:text-primary transition-colors"
+                  className="transition-colors hover:text-primary"
                 >
                   Municipal Departments
                 </Link>
@@ -71,7 +69,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/about"
-                  className="hover:text-primary transition-colors"
+                  className="transition-colors hover:text-primary"
                 >
                   SLA Transparency Charter
                 </Link>
@@ -79,7 +77,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/contact"
-                  className="hover:text-primary transition-colors"
+                  className="transition-colors hover:text-primary"
                 >
                   Ward Emergency Helplines
                 </Link>
@@ -87,16 +85,16 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Portals & Roles */}
-          <div className="flex flex-col gap-2.5">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-foreground">
+          {/* Column 3: Portal Access */}
+          <div className="space-y-3">
+            <h3 className="text-xs font-bold text-foreground">
               Portal Access
             </h3>
-            <ul className="flex flex-col gap-2 text-xs text-muted-foreground">
+            <ul className="space-y-2 text-xs text-muted-foreground">
               <li>
                 <Link
                   href="/login"
-                  className="hover:text-primary transition-colors"
+                  className="transition-colors hover:text-primary"
                 >
                   Citizen Portal Sign In
                 </Link>
@@ -104,7 +102,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/register"
-                  className="hover:text-primary transition-colors"
+                  className="transition-colors hover:text-primary"
                 >
                   Create Citizen Account
                 </Link>
@@ -112,7 +110,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/login"
-                  className="hover:text-primary transition-colors"
+                  className="transition-colors hover:text-primary"
                 >
                   Field Staff & Technicians
                 </Link>
@@ -120,7 +118,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/login"
-                  className="hover:text-primary transition-colors"
+                  className="transition-colors hover:text-primary"
                 >
                   Admin Dispatch Console
                 </Link>
@@ -128,7 +126,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/login"
-                  className="hover:text-primary transition-colors"
+                  className="transition-colors hover:text-primary"
                 >
                   One-Click Demo Access
                 </Link>
@@ -136,12 +134,12 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Governance & Compliance */}
-          <div className="flex flex-col gap-2.5">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-foreground">
+          {/* Column 4: Municipal Standards */}
+          <div className="space-y-3">
+            <h3 className="text-xs font-bold text-foreground">
               Municipal Standards
             </h3>
-            <ul className="flex flex-col gap-2 text-xs text-muted-foreground">
+            <ul className="space-y-2 text-xs text-muted-foreground">
               <li className="flex items-center gap-1.5">
                 <Shield className="size-3.5 text-primary shrink-0" />
                 <span>SSL Encrypted Data Transit</span>
@@ -160,31 +158,36 @@ export default function Footer() {
               </li>
             </ul>
           </div>
+
+          {/* Column 5: Civic Hotline Card */}
+          <div className="lg:col-span-1">
+            <div className="flex items-center gap-3 rounded-xl border border-sky-200/80 bg-sky-50/50 p-4 dark:border-slate-800 dark:bg-slate-900/90">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#0284c7]/10 text-[#0284c7] dark:bg-[#38bdf8]/15 dark:text-[#38bdf8]">
+                <Phone className="size-5" />
+              </div>
+              <div>
+                <p className="text-xs font-bold text-foreground">
+                  Civic Hotline
+                </p>
+                <p className="text-[11px] text-muted-foreground">
+                  Dial 333 or 999 for emergencies
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="mt-8 flex flex-col items-center justify-between gap-4 border-t pt-8 text-xs text-muted-foreground sm:flex-row">
-          <p>
-            &copy; {currentYear} CityCare Municipal Corporation. All rights
-            reserved.
-          </p>
-          <div className="flex gap-6">
-            <Link
-              href="/about"
-              className="hover:text-primary transition-colors"
-            >
+        {/* Bottom Copyright & Legal Links */}
+        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t pt-6 text-xs text-muted-foreground sm:flex-row">
+          <p>© {currentYear} CityCare Municipal Corporation. All rights reserved.</p>
+          <div className="flex flex-wrap gap-6">
+            <Link href="/about" className="transition-colors hover:text-primary">
               Privacy Policy
             </Link>
-            <Link
-              href="/about"
-              className="hover:text-primary transition-colors"
-            >
+            <Link href="/about" className="transition-colors hover:text-primary">
               Terms of Civic Engagement
             </Link>
-            <Link
-              href="/contact"
-              className="hover:text-primary transition-colors"
-            >
+            <Link href="/contact" className="transition-colors hover:text-primary">
               Feedback & Help
             </Link>
           </div>
