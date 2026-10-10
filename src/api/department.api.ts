@@ -42,3 +42,10 @@ export function deleteDepartment(id: string) {
     method: "DELETE",
   });
 }
+
+export function getDepartmentMembers(id: string) {
+  return apiClient<ApiResponse<import("@/types").DepartmentMemberInfo[]>>(
+    `/departments/${id}/members`,
+  );
+}
+

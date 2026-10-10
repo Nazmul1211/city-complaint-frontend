@@ -26,7 +26,7 @@ export function updateRequestStatus(
   payload: ChangeStatusPayload,
 ) {
   return apiClient<ApiResponse<StatusHistoryItem>>(
-    `/service-requests/${requestId}/status`,
+    `/requests/${requestId}/status`,
     {
       method: "PATCH",
       body: payload,
@@ -39,7 +39,7 @@ export function getRequestStatusHistory(
   params?: { page?: number; limit?: number },
 ) {
   return apiClient<ApiResponse<StatusHistoryItem[]>>(
-    `/service-requests/${requestId}/status/history`,
+    `/requests/${requestId}/status/history`,
     {
       params,
     },

@@ -26,7 +26,7 @@ export function assignStaffMember(
   payload: AssignStaffMemberPayload,
 ) {
   return apiClient<ApiResponse<RequestAssignmentItem>>(
-    `/service-requests/${requestId}/assignments`,
+    `/requests/${requestId}/assignments`,
     {
       method: "POST",
       body: payload,
@@ -44,7 +44,7 @@ export function getRequestAssignments(
   },
 ) {
   return apiClient<ApiResponse<RequestAssignmentItem[]>>(
-    `/service-requests/${requestId}/assignments`,
+    `/requests/${requestId}/assignments`,
     {
       params,
     },
@@ -57,7 +57,7 @@ export function releaseAssignment(
   payload?: ReleaseAssignmentPayload,
 ) {
   return apiClient<ApiResponse<RequestAssignmentItem>>(
-    `/service-requests/${requestId}/assignments/${assignmentId}/release`,
+    `/requests/${requestId}/assignments/${assignmentId}/release`,
     {
       method: "PATCH",
       body: payload,

@@ -11,7 +11,7 @@ export function addWorkUpdate(
   payload: CreateWorkUpdatePayload,
 ) {
   return apiClient<ApiResponse<WorkUpdate>>(
-    `/service-requests/${requestId}/updates`,
+    `/requests/${requestId}/updates`,
     {
       method: "POST",
       body: payload,
@@ -24,7 +24,7 @@ export function getWorkUpdates(
   params?: { page?: number; limit?: number },
 ) {
   return apiClient<ApiResponse<WorkUpdate[]>>(
-    `/service-requests/${requestId}/updates`,
+    `/requests/${requestId}/updates`,
     {
       params,
     },

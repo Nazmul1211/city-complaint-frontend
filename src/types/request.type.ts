@@ -51,6 +51,23 @@ export interface Ward {
   isActive: boolean;
 }
 
+export interface DepartmentMemberInfo {
+  id: string;
+  departmentId?: string;
+  userId?: string;
+  position: "MANAGER" | "CASE_OFFICER" | "TECHNICIAN";
+  isActive: boolean;
+  joinedAt: string;
+  user?: {
+    id: string;
+    name: string;
+    email: string;
+    avatarUrl?: string | null;
+    role?: string;
+    status?: string;
+  };
+}
+
 export interface Department {
   id: string;
   name: string;
@@ -66,6 +83,7 @@ export interface Department {
     categories?: number;
   };
   categories?: Category[];
+  members?: DepartmentMemberInfo[];
 }
 
 export interface MediaAttachment {

@@ -9,14 +9,14 @@ import type {
 } from "@/types";
 
 export function createServiceRequest(payload: CreateServiceRequestPayload) {
-  return apiClient<ApiResponse<ServiceRequest>>("/service-requests", {
+  return apiClient<ApiResponse<ServiceRequest>>("/requests", {
     method: "POST",
     body: payload,
   });
 }
 
 export function getAllServiceRequests(params?: RequestFilterParams) {
-  return apiClient<ApiResponse<ServiceRequest[]>>("/service-requests", {
+  return apiClient<ApiResponse<ServiceRequest[]>>("/requests", {
     params,
   });
 }
@@ -28,13 +28,13 @@ export function getMyServiceRequests(params?: {
   sortBy?: string;
   sortOrder?: "asc" | "desc";
 }) {
-  return apiClient<ApiResponse<ServiceRequest[]>>("/service-requests/my", {
+  return apiClient<ApiResponse<ServiceRequest[]>>("/requests/my", {
     params,
   });
 }
 
 export function getServiceRequestById(id: string) {
-  return apiClient<ApiResponse<ServiceRequest>>(`/service-requests/${id}`);
+  return apiClient<ApiResponse<ServiceRequest>>(`/requests/${id}`);
 }
 
 export function uploadRequestAttachment(
@@ -47,7 +47,7 @@ export function uploadRequestAttachment(
   formData.append("purpose", purpose);
 
   return apiClient<ApiResponse<MediaAttachment>>(
-    `/service-requests/${requestId}/attachments`,
+    `/requests/${requestId}/attachments`,
     {
       method: "POST",
       body: formData,

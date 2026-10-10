@@ -10,6 +10,7 @@ import {
   deleteDepartment,
   getAllDepartments,
   getDepartmentById,
+  getDepartmentMembers,
   type UpdateDepartmentPayload,
   updateDepartment,
 } from "@/api";
@@ -32,6 +33,14 @@ export function useGetDepartmentById(id: string) {
   return useQuery({
     queryKey: ["department", id],
     queryFn: () => getDepartmentById(id),
+    enabled: !!id,
+  });
+}
+
+export function useGetDepartmentMembers(id: string) {
+  return useQuery({
+    queryKey: ["department-members", id],
+    queryFn: () => getDepartmentMembers(id),
     enabled: !!id,
   });
 }

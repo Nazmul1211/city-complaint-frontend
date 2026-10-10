@@ -25,7 +25,7 @@ export function routeToDepartment(
   payload: RouteToDepartmentPayload,
 ) {
   return apiClient<ApiResponse<RequestRouteItem>>(
-    `/service-requests/${requestId}/routes`,
+    `/requests/${requestId}/routes`,
     {
       method: "POST",
       body: payload,
@@ -35,13 +35,13 @@ export function routeToDepartment(
 
 export function getRequestRoutes(requestId: string) {
   return apiClient<ApiResponse<RequestRouteItem[]>>(
-    `/service-requests/${requestId}/routes`,
+    `/requests/${requestId}/routes`,
   );
 }
 
 export function endRoute(requestId: string, routeId: string) {
   return apiClient<ApiResponse<RequestRouteItem>>(
-    `/service-requests/${requestId}/routes/${routeId}/end`,
+    `/requests/${requestId}/routes/${routeId}/end`,
     {
       method: "PATCH",
     },
