@@ -49,24 +49,29 @@ export function TeamGrid() {
         return (
           <Card
             key={leader.name}
-            className="flex flex-col justify-between border bg-card"
+            className="flex flex-col justify-between rounded-2xl border border-slate-200/90 bg-card p-6 shadow-sm transition-all hover:border-[#0284c7]/40 dark:border-slate-800/80 dark:bg-[#0c1427]"
           >
-            <CardHeader className="pb-3">
+            <CardHeader className="p-0 pb-3">
               <div className="flex items-center justify-between">
-                <div className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <div className="flex size-10 items-center justify-center rounded-xl bg-sky-50 text-[#0284c7] dark:bg-sky-950/60 dark:text-[#38bdf8]">
                   <Icon className="size-5" />
                 </div>
-                <Badge variant="outline" className="text-[10px]">
+                <Badge
+                  variant="outline"
+                  className="text-[10px] font-bold border-sky-300 text-[#0284c7] dark:border-sky-800 dark:text-sky-300"
+                >
                   Leadership
                 </Badge>
               </div>
-              <CardTitle className="mt-4 text-base font-semibold text-foreground">
+              <CardTitle className="mt-4 text-base font-bold text-foreground">
                 {leader.name}
               </CardTitle>
-              <p className="text-xs font-medium text-primary">{leader.role}</p>
+              <p className="text-xs font-semibold text-[#0284c7] dark:text-[#38bdf8]">
+                {leader.role}
+              </p>
             </CardHeader>
-            <CardContent className="space-y-2 pb-4 text-xs text-muted-foreground">
-              <p className="font-medium text-foreground">{leader.department}</p>
+            <CardContent className="p-0 space-y-2 pt-2 text-xs text-muted-foreground">
+              <p className="font-semibold text-foreground">{leader.department}</p>
               <p className="leading-relaxed">{leader.bio}</p>
             </CardContent>
           </Card>

@@ -53,26 +53,31 @@ export function SlaCommitmentCard() {
         return (
           <Card
             key={item.title}
-            className="flex flex-col justify-between border bg-card"
+            className="flex flex-col justify-between rounded-2xl border border-slate-200/90 bg-card p-6 shadow-sm transition-all hover:border-[#0284c7]/40 dark:border-slate-800/80 dark:bg-[#0c1427]"
           >
-            <CardHeader className="pb-3">
+            <CardHeader className="p-0 pb-3">
               <div className="flex items-center justify-between gap-2">
-                <div className="flex size-9 items-center justify-center rounded-md bg-primary/10 text-primary">
+                <div className="flex size-9 items-center justify-center rounded-xl bg-sky-50 text-[#0284c7] dark:bg-sky-950/60 dark:text-[#38bdf8]">
                   <Icon className="size-4" />
                 </div>
-                <Badge variant="outline" className="font-mono text-[10px]">
+                <Badge
+                  variant="outline"
+                  className="font-mono text-[10px] font-bold border-sky-300 text-[#0284c7] dark:border-sky-800 dark:text-sky-300"
+                >
                   {item.badge}
                 </Badge>
               </div>
-              <CardTitle className="mt-3 text-base font-semibold text-foreground">
+              <CardTitle className="mt-3 text-base font-bold text-foreground">
                 {item.title}
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3 pb-4 text-xs text-muted-foreground">
+            <CardContent className="p-0 space-y-3 pt-1 text-xs text-muted-foreground">
               <p className="leading-relaxed">{item.description}</p>
-              <div className="border-t pt-2.5 font-medium text-foreground">
+              <div className="border-t border-border/50 pt-3 font-medium text-foreground">
                 <span className="text-muted-foreground">Standard: </span>
-                {item.metric}
+                <span className="text-[#0284c7] dark:text-[#38bdf8] font-bold">
+                  {item.metric}
+                </span>
               </div>
             </CardContent>
           </Card>

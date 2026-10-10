@@ -58,15 +58,45 @@ export function HowItWorks() {
           </p>
         </div>
 
-        {/* 4 Connected Steps */}
-        <div className="relative mt-12">
+        {/* MOBILE VIEW (< sm): Connected Vertical Timeline */}
+        <div className="relative mt-8 space-y-4 sm:hidden before:absolute before:left-5 before:top-4 before:bottom-4 before:w-0.5 before:bg-[#0284c7]/25 dark:before:bg-[#38bdf8]/25">
+          {STEPS.map((step) => {
+            const Icon = step.icon;
+            return (
+              <div key={step.num} className="relative flex items-start gap-3.5">
+                {/* Connected Node with Icon on the vertical line */}
+                <div className="relative z-10 flex size-10 shrink-0 items-center justify-center rounded-xl border border-sky-300/80 bg-card text-[#0284c7] shadow-sm dark:border-sky-800/80 dark:bg-[#0c1427] dark:text-[#38bdf8]">
+                  <Icon className="size-4" />
+                </div>
+
+                {/* Step Card with Step Number Badge, Title, and Description */}
+                <div className="flex-1 rounded-xl border border-slate-200/90 bg-card p-3.5 shadow-sm dark:border-slate-800/80 dark:bg-[#0c1427]">
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-[11px] font-bold text-[#0284c7] dark:text-[#38bdf8]">
+                      Step {step.num}
+                    </span>
+                  </div>
+                  <h3 className="mt-1 text-sm font-bold text-foreground">
+                    {step.title}
+                  </h3>
+                  <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                    {step.description}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* DESKTOP & TABLET VIEW (sm and up): Exact Horizontal Stepper Preserved */}
+        <div className="relative mt-12 hidden sm:block">
           {/* Continuous Horizontal Blue Line across the 4 nodes on desktop */}
           <div
             aria-hidden="true"
             className="absolute left-10 right-10 top-3.5 hidden h-0.5 bg-[#0284c7]/30 dark:bg-[#38bdf8]/30 lg:block"
           />
 
-          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-8 lg:grid-cols-4">
             {STEPS.map((step, idx) => {
               const Icon = step.icon;
               const isLast = idx === STEPS.length - 1;

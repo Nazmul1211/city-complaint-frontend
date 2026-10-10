@@ -1,8 +1,23 @@
 "use client";
 
-import { ArrowRight, Clock, Search, ShieldCheck, Tag } from "lucide-react";
+import {
+  ArrowRight,
+  Building2,
+  Clock,
+  Droplets,
+  Hammer,
+  Lightbulb,
+  Search,
+  ShieldAlert,
+  ShieldCheck,
+  Tag,
+  Trash2,
+  Trees,
+  Wrench,
+  X,
+} from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -197,52 +212,207 @@ const FALLBACK_SERVICES: Category[] = [
   },
 ];
 
+const DEPARTMENT_FILTERS = [
+  { id: "ALL", label: "All Departments" },
+  { id: "PWD", label: "Roads & PWD" },
+  { id: "WASA", label: "Water & Sewer (WASA)" },
+  { id: "SWM", label: "Solid Waste" },
+  { id: "ELEC", label: "Street Lighting" },
+  { id: "HLTH", label: "Public Health" },
+  { id: "PRK", label: "Parks & Forestry" },
+];
+
+function getDepartmentIcon(code?: string) {
+  switch (code?.toUpperCase()) {
+    case "PWD":
+      return <Wrench className="size-4 text-[#0284c7] dark:text-[#38bdf8]" />;
+    case "WASA":
+      return <Droplets className="size-4 text-sky-500" />;
+    case "SWM":
+      return <Trash2 className="size-4 text-emerald-500" />;
+    case "ELEC":
+      return <Lightbulb className="size-4 text-amber-500" />;
+    case "HLTH":
+      return <ShieldAlert className="size-4 text-rose-500" />;
+    case "PRK":
+      return <Trees className="size-4 text-teal-500" />;
+    default:
+      return <Building2 className="size-4 text-muted-foreground" />;
+  }
+}
+
 export function ServiceCatalog() {
   const [search, setSearch] = useState("");
+  const [selectedDept, setSelectedDept] = useState("ALL");
+  const [selectedFee, setSelectedFee] = useState<"ALL" | "FREE" | "PAID">("ALL");
+
   const { data, isLoading } = useGetCategories();
 
   const fetchedCategories =
     data?.data && data.data.length > 0 ? data.data : null;
   const categories = fetchedCategories ?? FALLBACK_SERVICES;
 
-  const filtered = categories.filter((cat) => {
-    const q = search.toLowerCase().trim();
-    if (!q) return true;
-    return (
-      cat.name.toLowerCase().includes(q) ||
-      cat.code?.toLowerCase().includes(q) ||
-      cat.description?.toLowerCase().includes(q) ||
-      cat.department?.name?.toLowerCase().includes(q)
-    );
-  });
+  // Filter categories by search, department, and fee status
+  const filtered = useMemo(() => {
+    return categories.filter((cat) => {
+      // 1. Department Filter
+      if (selectedDept !== "ALL") {
+        const deptCode = cat.department?.code?.toUpperCase();
+        if (deptCode !== selectedDept) return false;
+      }
+
+      // 2. Fee Filter
+      if (selectedFee === "FREE" && cat.paymentRequired) return false;
+      if (selectedFee === "PAID" && !cat.paymentRequired) return false;
+
+      // 3. Search Query
+      const q = search.toLowerCase().trim();
+      if (!q) return true;
+      return (
+        cat.name.toLowerCase().includes(q) ||
+        cat.code?.toLowerCase().includes(q) ||
+        cat.description?.toLowerCase().includes(q) ||
+        cat.department?.name?.toLowerCase().includes(q) ||
+        cat.department?.code?.toLowerCase().includes(q)
+      );
+    });
+  }, [categories, selectedDept, selectedFee, search]);
+
+  const clearAllFilters = () => {
+    setSearch("");
+    setSelectedDept("ALL");
+    setSelectedFee("ALL");
+  };
 
   return (
     <div className="space-y-6">
-      <div className="relative max-w-md">
-        <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-        <input
-          type="text"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search by civic issue name, code, or keyword..."
-          className="h-10 w-full rounded-md border border-input bg-background pl-9 pr-4 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring focus:ring-1 focus:ring-ring"
-        />
+      {/* Search & Filter Controls Bar */}
+      <div className="rounded-2xl border border-slate-200/90 bg-card p-4 sm:p-5 shadow-sm dark:border-slate-800/80 dark:bg-[#0c1427] space-y-4">
+        {/* Top Search Input & Fee Filter Toggle */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="relative flex-1 max-w-xl">
+            <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search by civic issue name, code (e.g. PWD-POT), or department..."
+              className="h-10 sm:h-11 w-full rounded-xl border border-input bg-background pl-10 pr-9 text-xs sm:text-sm text-foreground outline-none transition-all placeholder:text-muted-foreground focus:border-[#0284c7] focus:ring-1 focus:ring-[#0284c7]"
+            />
+            {search && (
+              <button
+                type="button"
+                onClick={() => setSearch("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              >
+                <X className="size-4" />
+              </button>
+            )}
+          </div>
+
+          {/* Free vs Fee Segment Toggle */}
+          <div className="inline-flex rounded-lg border border-border p-1 bg-muted/40 dark:bg-slate-900/60 text-xs">
+            <button
+              type="button"
+              onClick={() => setSelectedFee("ALL")}
+              className={`rounded-md px-3 py-1.5 font-semibold transition-all ${
+                selectedFee === "ALL"
+                  ? "bg-background text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              All Types
+            </button>
+            <button
+              type="button"
+              onClick={() => setSelectedFee("FREE")}
+              className={`rounded-md px-3 py-1.5 font-semibold transition-all ${
+                selectedFee === "FREE"
+                  ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 font-bold shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              Free Public
+            </button>
+            <button
+              type="button"
+              onClick={() => setSelectedFee("PAID")}
+              className={`rounded-md px-3 py-1.5 font-semibold transition-all ${
+                selectedFee === "PAID"
+                  ? "bg-amber-500/15 text-amber-700 dark:text-amber-400 font-bold shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              Commercial (Fee)
+            </button>
+          </div>
+        </div>
+
+        {/* 1-Click Department Filter Pills */}
+        <div className="flex flex-wrap items-center gap-1.5 pt-1 border-t border-border/50">
+          <span className="text-xs font-semibold text-muted-foreground mr-1">
+            Department:
+          </span>
+          {DEPARTMENT_FILTERS.map((dept) => {
+            const isSelected = selectedDept === dept.id;
+            return (
+              <button
+                key={dept.id}
+                type="button"
+                onClick={() => setSelectedDept(dept.id)}
+                className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
+                  isSelected
+                    ? "bg-[#0284c7] text-white shadow-sm font-semibold dark:bg-[#0284c7]"
+                    : "border border-border/70 bg-card text-muted-foreground hover:border-slate-400 hover:text-foreground dark:bg-slate-900/40"
+                }`}
+              >
+                {dept.label}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
+      {/* Results Header Count */}
+      <div className="flex items-center justify-between text-xs text-muted-foreground px-1">
+        <span>
+          Showing <strong className="text-foreground">{filtered.length}</strong>{" "}
+          of {categories.length} civic services
+        </span>
+        {(search || selectedDept !== "ALL" || selectedFee !== "ALL") && (
+          <button
+            type="button"
+            onClick={clearAllFilters}
+            className="text-xs font-semibold text-[#0284c7] hover:underline dark:text-[#38bdf8]"
+          >
+            Reset Filters
+          </button>
+        )}
+      </div>
+
+      {/* Services Grid or Empty State */}
       {isLoading ? (
         <ServiceCatalogLoading />
       ) : filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed py-16 text-center">
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border py-16 text-center bg-card/40 dark:bg-[#0c1427]/40">
           <div className="flex size-12 items-center justify-center rounded-full bg-muted text-muted-foreground">
             <Tag className="size-6" />
           </div>
           <h3 className="mt-4 text-base font-semibold text-foreground">
-            No service categories found
+            No matching service categories found
           </h3>
-          <p className="mt-1 text-sm text-muted-foreground">
-            No civic services match your search query "{search}". Try searching
-            by another keyword.
+          <p className="mt-1 text-xs text-muted-foreground max-w-sm">
+            No civic services match your current query or department filters.
+            Try adjusting keywords or reset filters.
           </p>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={clearAllFilters}
+            className="mt-4 text-xs"
+          >
+            Clear All Filters
+          </Button>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -259,81 +429,95 @@ export function ServiceCatalog() {
             return (
               <Card
                 key={service.id}
-                className="flex h-full flex-col justify-between border bg-card"
+                className="group flex h-full flex-col justify-between rounded-2xl border border-slate-200/90 bg-card p-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-[#0284c7]/50 hover:shadow-md dark:border-slate-800/80 dark:bg-[#0c1427]"
               >
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="font-mono text-xs font-semibold text-primary">
-                      {service.code ?? "SVC"}
-                    </span>
+                <div>
+                  {/* Top Bar: Dept Icon, Code, Fee Badge */}
+                  <div className="flex items-center justify-between gap-2 pb-3 border-b border-border/50">
+                    <div className="flex items-center gap-2">
+                      <div className="flex size-8 items-center justify-center rounded-lg bg-sky-50 dark:bg-sky-950/60">
+                        {getDepartmentIcon(service.department?.code)}
+                      </div>
+                      <span className="font-mono text-xs font-bold text-[#0284c7] dark:text-[#38bdf8]">
+                        {service.code ?? "SVC"}
+                      </span>
+                    </div>
+
                     {service.paymentRequired ? (
-                      <Badge variant="warning">
+                      <Badge
+                        variant="warning"
+                        className="font-bold text-[10px] tracking-wider uppercase"
+                      >
                         {service.currency ?? "BDT"} {service.defaultFeeAmount}{" "}
                         FEE
                       </Badge>
                     ) : (
                       <Badge
                         variant="outline"
-                        className="text-emerald-600 dark:text-emerald-400"
+                        className="border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-bold text-[10px] tracking-wider uppercase"
                       >
-                        FREE PUBLIC SERVICE
+                        FREE SERVICE
                       </Badge>
                     )}
                   </div>
-                  <CardTitle className="mt-2 text-base font-semibold text-foreground">
-                    {service.name}
-                  </CardTitle>
-                </CardHeader>
 
-                <CardContent className="space-y-3 pb-3 text-xs text-muted-foreground">
-                  <p className="line-clamp-2 leading-relaxed">
+                  {/* Service Title & Department */}
+                  <div className="mt-4 space-y-1">
+                    <CardTitle className="text-base font-bold text-foreground leading-snug group-hover:text-[#0284c7] dark:group-hover:text-[#38bdf8] transition-colors">
+                      {service.name}
+                    </CardTitle>
+                    {service.department && (
+                      <p className="text-[11px] font-medium text-muted-foreground">
+                        {service.department.name}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Description */}
+                  <p className="mt-2.5 text-xs text-muted-foreground leading-relaxed line-clamp-2">
                     {service.description ??
-                      "Municipal service category for citizen reporting."}
+                      "Official municipal service category for citizen grievance filing."}
                   </p>
 
-                  <div className="space-y-2 border-t pt-3">
-                    {service.department && (
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="text-muted-foreground">
-                          Department:
-                        </span>
-                        <span className="font-medium text-foreground">
-                          {service.department.name}
-                        </span>
-                      </div>
-                    )}
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="flex items-center gap-1 text-muted-foreground">
+                  {/* SLA Benchmarks Strip */}
+                  <div className="mt-4 space-y-2 rounded-xl bg-muted/40 p-3 text-xs dark:bg-slate-900/60">
+                    <div className="flex items-center justify-between">
+                      <span className="flex items-center gap-1.5 text-muted-foreground">
                         <Clock className="size-3 text-muted-foreground" />
                         First Response SLA:
                       </span>
-                      <span className="font-medium text-foreground">
+                      <span className="font-semibold text-foreground">
                         Within {respHours} hrs
                       </span>
                     </div>
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="flex items-center gap-1 text-muted-foreground">
+
+                    <div className="flex items-center justify-between">
+                      <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-medium">
                         <ShieldCheck className="size-3 text-emerald-600 dark:text-emerald-400" />
-                        Resolution SLA:
+                        Target Resolution:
                       </span>
-                      <span className="font-medium text-emerald-600 dark:text-emerald-400">
+                      <span className="font-bold text-emerald-600 dark:text-emerald-400">
                         Within {resHours} hrs
                       </span>
                     </div>
                   </div>
-                </CardContent>
+                </div>
 
-                <CardFooter className="border-t pt-3">
+                {/* Footer Action */}
+                <div className="mt-5 pt-4 border-t border-border/50">
                   <Link
                     href={`/dashboard/submit-request?categoryId=${service.id}`}
-                    className="w-full"
+                    className="w-full block"
                   >
-                    <Button size="sm" className="w-full gap-1.5">
-                      Report This Issue
+                    <Button
+                      size="sm"
+                      className="w-full gap-1.5 rounded-xl bg-[#0284c7] font-semibold text-white shadow-sm hover:bg-[#0369a1] dark:bg-[#0284c7] dark:hover:bg-[#0369a1]"
+                    >
+                      <span>Report This Issue</span>
                       <ArrowRight className="size-3.5" />
                     </Button>
                   </Link>
-                </CardFooter>
+                </div>
               </Card>
             );
           })}
@@ -347,20 +531,21 @@ function ServiceCatalogLoading() {
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {[1, 2, 3, 4, 5, 6].map((item) => (
-        <div key={item} className="space-y-3 rounded-lg border bg-card p-6">
+        <div
+          key={item}
+          className="space-y-4 rounded-2xl border border-slate-200/90 bg-card p-6 shadow-sm dark:border-slate-800/80 dark:bg-[#0c1427]"
+        >
           <div className="flex items-center justify-between">
-            <Skeleton className="h-4 w-16" />
-            <Skeleton className="h-5 w-24" />
+            <Skeleton className="h-5 w-20 rounded-md" />
+            <Skeleton className="h-5 w-24 rounded-full" />
           </div>
-          <Skeleton className="h-5 w-3/4" />
-          <Skeleton className="h-4 w-full" />
-          <div className="border-t pt-3 space-y-2">
-            <Skeleton className="h-3 w-full" />
-            <Skeleton className="h-3 w-full" />
+          <Skeleton className="h-5 w-3/4 rounded-md" />
+          <Skeleton className="h-4 w-full rounded-md" />
+          <div className="rounded-xl bg-muted/40 p-3 space-y-2">
+            <Skeleton className="h-3 w-full rounded" />
+            <Skeleton className="h-3 w-full rounded" />
           </div>
-          <div className="border-t pt-3">
-            <Skeleton className="h-8 w-full" />
-          </div>
+          <Skeleton className="h-9 w-full rounded-xl" />
         </div>
       ))}
     </div>
