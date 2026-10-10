@@ -15,144 +15,6 @@ import { TablePagination } from "@/components/ui/table-pagination";
 import { useGetMyRequests } from "@/hooks";
 import type { ServiceRequest } from "@/types";
 
-const FALLBACK_MY_REQUESTS: ServiceRequest[] = [
-  {
-    id: "req-1",
-    requestNo: "REQ-2026-0891",
-    title: "Deep Pothole on Mirpur-10 Main Intersection",
-    description:
-      "Deep craters and broken asphalt causing severe traffic bottlenecks.",
-    type: "COMPLAINT",
-    priority: "HIGH",
-    status: "RESOLVED",
-    wardId: "ward-12",
-    categoryId: "cat-pothole",
-    citizenId: "citizen-1",
-    addressLine: "Mirpur-10 Circle, Near Metro Pillar #42",
-    createdAt: new Date(Date.now() - 24 * 3600 * 1000).toISOString(),
-    updatedAt: new Date().toISOString(),
-    category: {
-      id: "cat-pothole",
-      departmentId: "dept-pwd",
-      name: "Road Pothole & Asphalt Damage",
-      isActive: true,
-      department: {
-        id: "dept-pwd",
-        name: "Public Works & Road Maintenance",
-        code: "PWD",
-        isActive: true,
-      },
-    },
-    ward: {
-      id: "ward-12",
-      name: "Ward 12 (Mirpur)",
-      city: "Dhaka",
-      isActive: true,
-    },
-  },
-  {
-    id: "req-2",
-    requestNo: "REQ-2026-0902",
-    title: "Drinking Water Pipeline Burst on Lake Road",
-    description:
-      "Underground water pipe leaking clean potable water across street.",
-    type: "COMPLAINT",
-    priority: "URGENT",
-    status: "IN_PROGRESS",
-    wardId: "ward-15",
-    categoryId: "cat-water-leak",
-    citizenId: "citizen-1",
-    addressLine: "Road 8A, House 14, Dhanmondi",
-    createdAt: new Date(Date.now() - 12 * 3600 * 1000).toISOString(),
-    updatedAt: new Date().toISOString(),
-    category: {
-      id: "cat-water-leak",
-      departmentId: "dept-wasa",
-      name: "Drinking Water Pipeline Leakage",
-      isActive: true,
-      department: {
-        id: "dept-wasa",
-        name: "Water Supply & Sewerage Authority",
-        code: "WASA",
-        isActive: true,
-      },
-    },
-    ward: {
-      id: "ward-15",
-      name: "Ward 15 (Dhanmondi)",
-      city: "Dhaka",
-      isActive: true,
-    },
-  },
-  {
-    id: "req-3",
-    requestNo: "REQ-2026-0915",
-    title: "Streetlight Strip Dark on Main Boulevard",
-    description: "Entire 500-meter stretch unlit after transformer tripping.",
-    type: "COMPLAINT",
-    priority: "MEDIUM",
-    status: "ASSIGNED",
-    wardId: "ward-08",
-    categoryId: "cat-streetlight",
-    citizenId: "citizen-1",
-    addressLine: "Gulshan Avenue, Near Block B Gate",
-    createdAt: new Date(Date.now() - 6 * 3600 * 1000).toISOString(),
-    updatedAt: new Date().toISOString(),
-    category: {
-      id: "cat-streetlight",
-      departmentId: "dept-elec",
-      name: "Streetlight Outage & Damaged Lamp",
-      isActive: true,
-      department: {
-        id: "dept-elec",
-        name: "Electrical & Street Lighting",
-        code: "ELEC",
-        isActive: true,
-      },
-    },
-    ward: {
-      id: "ward-08",
-      name: "Ward 08 (Gulshan)",
-      city: "Dhaka",
-      isActive: true,
-    },
-  },
-  {
-    id: "req-4",
-    requestNo: "REQ-2026-0928",
-    title: "Overflowing Dumpster on Block D Road 5",
-    description:
-      "Trash bins overflowing onto pedestrian walkway; animal infestation.",
-    type: "COMPLAINT",
-    priority: "HIGH",
-    status: "SUBMITTED",
-    wardId: "ward-19",
-    categoryId: "cat-waste-dump",
-    citizenId: "citizen-1",
-    addressLine: "Road 5, Block D, Banani",
-    createdAt: new Date(Date.now() - 2 * 3600 * 1000).toISOString(),
-    updatedAt: new Date().toISOString(),
-    category: {
-      id: "cat-waste-dump",
-      departmentId: "dept-swm",
-      name: "Overflowing Garbage & Illegal Dump",
-      isActive: true,
-      department: {
-        id: "dept-swm",
-        name: "Solid Waste Management",
-        code: "SWM",
-        isActive: true,
-      },
-    },
-    ward: {
-      id: "ward-19",
-      name: "Ward 19 (Banani)",
-      city: "Dhaka",
-      isActive: true,
-    },
-  },
-];
-
 export default function MyRequestsPage() {
   return (
     <Suspense
@@ -233,11 +95,10 @@ function MyRequestsContent() {
   const { data, isLoading } = useGetMyRequests({
     status: statusTab === "ALL" ? undefined : statusTab,
     page,
-    limit: 12,
+    limit: 50,
   });
 
-  const rawRequests =
-    data?.data && data.data.length > 0 ? data.data : FALLBACK_MY_REQUESTS;
+  const rawRequests: ServiceRequest[] = data?.data || [];
 
   // Filter client-side for immediate reactivity
   const filtered = useMemo(() => {
@@ -250,12 +111,29 @@ function MyRequestsContent() {
       }
       if (searchTerm.trim()) {
         const q = searchTerm.toLowerCase().trim();
-        const matchesNo = req.requestNo.toLowerCase().includes(q);
-        const matchesTitle = req.title.toLowerCase().includes(q);
-        const matchesWard = req.ward?.name?.toLowerCase().includes(q) ?? false;
+        const matchesNo = req.requestNo?.toLowerCase().includes(q) ?? false;
+        const matchesTitle = req.title?.toLowerCase().includes(q) ?? false;
+        const matchesDesc = req.description?.toLowerCase().includes(q) ?? false;
+        const matchesWard =
+          (req.ward?.name?.toLowerCase().includes(q) ||
+            req.reportedLocation?.ward?.name?.toLowerCase().includes(q)) ??
+          false;
+        const matchesAddress =
+          (req.addressLine?.toLowerCase().includes(q) ||
+            req.reportedLocation?.addressLine?.toLowerCase().includes(q) ||
+            req.landmark?.toLowerCase().includes(q) ||
+            req.reportedLocation?.landmark?.toLowerCase().includes(q)) ??
+          false;
         const matchesCat =
           req.category?.name?.toLowerCase().includes(q) ?? false;
-        if (!matchesNo && !matchesTitle && !matchesWard && !matchesCat) {
+        if (
+          !matchesNo &&
+          !matchesTitle &&
+          !matchesDesc &&
+          !matchesWard &&
+          !matchesAddress &&
+          !matchesCat
+        ) {
           return false;
         }
       }
@@ -279,8 +157,8 @@ function MyRequestsContent() {
             My Filed Complaints
           </h1>
           <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
-            Monitor real-time resolution updates, field inspection progress, and
-            turnaround SLA countdowns for your submitted requests.
+            Track status, view department assignments, and review field
+            inspections for all complaints submitted from your account.
           </p>
         </div>
 
@@ -292,7 +170,7 @@ function MyRequestsContent() {
         </Link>
       </div>
 
-      {/* Filter Bar */}
+      {/* Filter and Search Bar */}
       <RequestFilterBar
         statusTab={statusTab}
         onStatusChange={handleStatusChange}
@@ -304,14 +182,17 @@ function MyRequestsContent() {
         onViewModeChange={handleViewModeChange}
       />
 
-      {/* Content Rendering: Grid vs Table */}
+      {/* Requests List Grid or Table */}
       {isLoading ? (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="space-y-3 rounded-lg border bg-card p-5">
-              <Skeleton className="h-4 w-24" />
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div key={i} className="rounded-lg border bg-card p-4 space-y-3">
+              <div className="flex justify-between items-center">
+                <Skeleton className="h-4 w-28" />
+                <Skeleton className="h-4 w-16" />
+              </div>
               <Skeleton className="h-5 w-3/4" />
-              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-10 w-full" />
               <div className="border-t pt-3 space-y-1.5">
                 <Skeleton className="h-3 w-1/2" />
                 <Skeleton className="h-3 w-2/3" />
@@ -326,12 +207,16 @@ function MyRequestsContent() {
               <SearchX className="size-5 text-muted-foreground" />
             </span>
             <p className="mt-3 text-sm font-semibold text-foreground">
-              No matching complaints found
+              {rawRequests.length === 0
+                ? "No complaints filed yet"
+                : "No matching complaints found"}
             </p>
             <p className="mt-1 text-xs text-muted-foreground max-w-sm">
-              {searchTerm
-                ? `No requests match "${searchTerm}". Try adjusting your filters.`
-                : "You have no complaints matching the selected status."}
+              {rawRequests.length === 0
+                ? "You haven't lodged any civic complaints. Click below to report an issue in your neighborhood."
+                : searchTerm
+                  ? `No requests match "${searchTerm}". Try adjusting your filters.`
+                  : "You have no complaints matching the selected status."}
             </p>
             <Link href="/dashboard/submit-request" className="mt-4">
               <Button size="sm">File a New Complaint</Button>

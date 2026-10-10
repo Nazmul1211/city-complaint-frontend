@@ -55,35 +55,26 @@ export default function CitizenProfilePage() {
     );
   }
 
-  // Fallback demo citizen if not populated
-  const fallbackUser: User = {
-    id: "citizen-demo-1",
-    name: "Tanvir Ahmed",
-    email: "citizen@citycomplaint.gov",
-    role: "CITIZEN",
-    status: "ACTIVE",
-    emailVerified: true,
-    avatarUrl: null,
-    avatarPublicId: null,
-    phone: "01712345678",
-    authProvider: "CREDENTIAL",
-    isDeleted: false,
-    deletedAt: null,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    citizen: {
-      id: "cit-1",
-      userId: "citizen-demo-1",
-      name: "Tanvir Ahmed",
-      email: "citizen@citycomplaint.gov",
-      contactNumber: "01712345678",
-      address: "House 42, Road 7, Block C, Mirpur-10, Dhaka",
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-  };
+  if (!user) {
+    return (
+      <div className="flex flex-col items-center justify-center p-12 text-center border rounded-xl bg-card space-y-4">
+        <div className="size-12 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
+          <UserIcon className="size-6" />
+        </div>
+        <div className="space-y-1">
+          <h2 className="text-lg font-bold">Profile Unavailable</h2>
+          <p className="text-xs text-muted-foreground max-w-sm">
+            Unable to load user profile. Please sign in or refresh your session.
+          </p>
+        </div>
+        <Link href="/login">
+          <Button size="sm">Go to Login</Button>
+        </Link>
+      </div>
+    );
+  }
 
-  const activeUser: User = user || fallbackUser;
+  const activeUser: User = user;
 
   const contactNumber =
     activeUser.citizen?.contactNumber || activeUser.phone || "";

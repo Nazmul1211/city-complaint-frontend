@@ -30,17 +30,8 @@ interface StatusDistributionChartProps {
   className?: string;
 }
 
-const defaultStatusData: StatusDistributionItem[] = [
-  { name: "Resolved", value: 85, color: "#10b981" },
-  { name: "In Progress", value: 28, color: "#f59e0b" },
-  { name: "Assigned", value: 16, color: "#06b6d4" },
-  { name: "Triaged", value: 12, color: "#8b5cf6" },
-  { name: "Submitted", value: 9, color: "#3b82f6" },
-  { name: "Rejected", value: 4, color: "#ef4444" },
-];
-
 export function StatusDistributionChart({
-  data = defaultStatusData,
+  data = [],
   totalCount,
   className,
 }: StatusDistributionChartProps) {
@@ -61,6 +52,29 @@ export function StatusDistributionChart({
         </CardHeader>
         <CardContent>
           <Skeleton className="h-[280px] w-full rounded-xl" />
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (total === 0 || data.length === 0) {
+    return (
+      <Card className={className}>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base font-semibold">
+            Status Distribution
+          </CardTitle>
+          <CardDescription className="text-xs">
+            Current breakdown of active and concluded complaints
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-col items-center justify-center p-12 text-center">
+          <p className="text-sm font-semibold text-foreground">
+            No complaints in registry
+          </p>
+          <p className="text-xs text-muted-foreground mt-1 max-w-sm">
+            Status distribution will populate as citizens submit complaints.
+          </p>
         </CardContent>
       </Card>
     );

@@ -87,7 +87,9 @@ export function RequestTable({
                       {req.category?.name ?? "Service"}
                     </TableCell>
                     <TableCell className="text-xs text-muted-foreground">
-                      {req.ward?.name ?? "Ward"}
+                      {req.reportedLocation?.ward?.name ||
+                        req.ward?.name ||
+                        "Ward"}
                     </TableCell>
                     <TableCell>
                       <PriorityBadge priority={req.priority} />

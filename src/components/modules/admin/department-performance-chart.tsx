@@ -32,17 +32,8 @@ interface DepartmentPerformanceChartProps {
   className?: string;
 }
 
-const defaultDepartmentData: DepartmentMetricData[] = [
-  { department: "Roads & Highways", total: 42, resolved: 36, rate: 85.7 },
-  { department: "Water & Sewerage", total: 38, resolved: 32, rate: 84.2 },
-  { department: "Waste Management", total: 55, resolved: 51, rate: 92.7 },
-  { department: "Electricity & Grid", total: 29, resolved: 24, rate: 82.8 },
-  { department: "Parks & Recreation", total: 18, resolved: 17, rate: 94.4 },
-  { department: "Public Health", total: 24, resolved: 20, rate: 83.3 },
-];
-
 export function DepartmentPerformanceChart({
-  data = defaultDepartmentData,
+  data = [],
   className,
 }: DepartmentPerformanceChartProps) {
   const [isMounted, setIsMounted] = useState(false);
@@ -65,6 +56,34 @@ export function DepartmentPerformanceChart({
     );
   }
 
+  if (data.length === 0) {
+    return (
+      <Card className={className}>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base font-semibold">
+            Department Caseload & Resolution
+          </CardTitle>
+          <CardDescription className="text-xs">
+            Assigned complaint volume vs resolved casework per municipal bureau
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-col items-center justify-center p-12 text-center">
+          <p className="text-sm font-semibold text-foreground">
+            No department casework recorded yet
+          </p>
+          <p className="text-xs text-muted-foreground mt-1 max-w-sm">
+            Performance metrics will calculate automatically once complaints are
+            assigned to municipal departments.
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const avgRate = Math.round(
+    data.reduce((acc, curr) => acc + curr.rate, 0) / data.length,
+  );
+
   return (
     <Card className={className}>
       <CardHeader className="pb-2">
@@ -79,7 +98,7 @@ export function DepartmentPerformanceChart({
             </CardDescription>
           </div>
           <span className="text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-500/10 px-2 py-1 rounded-md self-start sm:self-auto">
-            Avg Rate: 87.2%
+            Avg Rate: {avgRate}%
           </span>
         </div>
       </CardHeader>

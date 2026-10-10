@@ -158,30 +158,12 @@ export function ComplaintWizard() {
       });
     } catch (err: unknown) {
       const error = err as { message?: string };
-      // Fallback optimistic simulation for demo/offline resiliency
-      const simulatedRequestNo = `REQ-2026-${Math.floor(1000 + Math.random() * 9000)}`;
-      const simulated: ServiceRequest = {
-        id: "simulated-id",
-        requestNo: simulatedRequestNo,
-        title: title.trim(),
-        description: description.trim(),
-        type,
-        priority,
-        status: "SUBMITTED",
-        wardId,
-        categoryId,
-        citizenId: "citizen-demo",
-        addressLine: addressLine.trim(),
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-      setCreatedRequest(simulated);
       toast.add({
-        title: "Complaint Lodged (Demo Mode)",
-        description: error.message
-          ? `Backend notice: ${error.message}. Lodged as ${simulatedRequestNo}.`
-          : `Generated reference #${simulatedRequestNo}.`,
-        type: "info",
+        title: "Submission Failed",
+        description:
+          error.message ||
+          "Unable to lodge your complaint with municipal dispatch. Please review form fields and try again.",
+        type: "error",
       });
     }
   };

@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import {
   AssignStaffModal,
   RouteDepartmentModal,
@@ -51,161 +51,10 @@ import {
 import type {
   Feedback,
   MediaAttachment,
-  ServiceRequest,
   TimelineEvent,
   WorkUpdate,
 } from "@/types";
 import AdminRequestDetailsLoading from "./loading";
-
-// High-fidelity fallback map for demo casework
-const FALLBACK_ADMIN_DETAILS: Record<
-  string,
-  {
-    request: ServiceRequest;
-    timeline: TimelineEvent[];
-    updates: WorkUpdate[];
-    attachments: MediaAttachment[];
-    feedback?: Feedback;
-  }
-> = {
-  "req-1": {
-    request: {
-      id: "req-1",
-      requestNo: "REQ-2026-0891",
-      title: "Deep Pothole on Mirpur-10 Main Intersection",
-      description:
-        "Deep craters and broken asphalt causing severe traffic bottlenecks on the northern side of Mirpur-10 roundabout. Multiple vehicles have suffered wheel damage. Emergency road patch required before upcoming monsoon rains.",
-      type: "COMPLAINT",
-      priority: "HIGH",
-      status: "RESOLVED",
-      wardId: "ward-12",
-      categoryId: "cat-pothole",
-      citizenId: "citizen-1",
-      addressLine: "Mirpur-10 Circle, Near Metro Pillar #42",
-      landmark: "Opposite Fire Service Station & Metro Pillar #42",
-      latitude: 23.8069,
-      longitude: 90.3687,
-      createdAt: new Date(Date.now() - 48 * 3600 * 1000).toISOString(),
-      updatedAt: new Date(Date.now() - 4 * 3600 * 1000).toISOString(),
-      responseDueAt: new Date(Date.now() - 40 * 3600 * 1000).toISOString(),
-      resolutionDueAt: new Date(Date.now() - 12 * 3600 * 1000).toISOString(),
-      firstRespondedAt: new Date(Date.now() - 42 * 3600 * 1000).toISOString(),
-      resolvedAt: new Date(Date.now() - 4 * 3600 * 1000).toISOString(),
-      category: {
-        id: "cat-pothole",
-        departmentId: "dept-pwd",
-        name: "Road Pothole & Asphalt Damage",
-        isActive: true,
-        department: {
-          id: "dept-pwd",
-          name: "Public Works & Road Maintenance",
-          code: "PWD",
-          contactEmail: "pwd.roads@dhakacity.gov.bd",
-          contactPhone: "+880 2 9568712",
-          isActive: true,
-        },
-      },
-      ward: {
-        id: "ward-12",
-        name: "Ward 12 (Mirpur)",
-        city: "Dhaka",
-        isActive: true,
-      },
-      citizen: {
-        id: "citizen-1",
-        userId: "usr-citizen-1",
-        name: "Sarah Jenkins",
-        email: "citizen@citycomplaint.gov",
-        contactNumber: "+880 1712 345678",
-      },
-    },
-    timeline: [
-      {
-        id: "evt-1",
-        type: "SUBMITTED",
-        title: "Complaint Lodged",
-        description:
-          "Citizen submitted issue via civic mobile portal with photo evidence.",
-        timestamp: new Date(Date.now() - 48 * 3600 * 1000).toISOString(),
-        actor: {
-          id: "c-1",
-          name: "Sarah Jenkins",
-          email: "citizen@citycomplaint.gov",
-        },
-      },
-      {
-        id: "evt-2",
-        type: "ROUTED",
-        title: "Dispatched to Department",
-        description:
-          "Automated city routing assigned complaint to Public Works & Road Maintenance.",
-        timestamp: new Date(Date.now() - 46 * 3600 * 1000).toISOString(),
-        department: {
-          id: "dept-pwd",
-          name: "Public Works & Road Maintenance",
-          code: "PWD",
-        },
-      },
-      {
-        id: "evt-3",
-        type: "ASSIGNED",
-        title: "Field Officer Assigned",
-        description:
-          "Assigned to Zone 4 Road Maintenance Crew under Engr. Kamal Hossain.",
-        timestamp: new Date(Date.now() - 36 * 3600 * 1000).toISOString(),
-        actor: {
-          id: "staff-1",
-          name: "Engr. Kamal Hossain",
-          email: "kamal@pwd.gov.bd",
-        },
-      },
-      {
-        id: "evt-4",
-        type: "STATUS_CHANGED",
-        title: "Repair In Progress",
-        description:
-          "Heavy roller and asphalt leveling truck deployed to Mirpur-10 Circle.",
-        timestamp: new Date(Date.now() - 20 * 3600 * 1000).toISOString(),
-      },
-      {
-        id: "evt-5",
-        type: "RESOLVED",
-        title: "Pothole Repaired & Sealed",
-        description:
-          "Cold-mix asphalt compacted, surface leveled, and site inspection verified by Ward 12 superintendent.",
-        timestamp: new Date(Date.now() - 4 * 3600 * 1000).toISOString(),
-        actor: {
-          id: "staff-1",
-          name: "Engr. Kamal Hossain",
-          email: "kamal@pwd.gov.bd",
-        },
-      },
-    ],
-    updates: [
-      {
-        id: "upd-1",
-        requestId: "req-1",
-        authorId: "staff-1",
-        author: {
-          id: "staff-1",
-          name: "Engr. Kamal Hossain",
-          email: "kamal@pwd.gov.bd",
-        },
-        note: "Initial inspection complete. Identified two secondary fissures adjacent to primary pothole. Ordered 3 cubic meters asphalt gravel mix.",
-        createdAt: new Date(Date.now() - 30 * 3600 * 1000).toISOString(),
-      },
-    ],
-    attachments: [
-      {
-        id: "att-1",
-        requestId: "req-1",
-        url: "https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?w=800&auto=format&fit=crop&q=80",
-        caption: "Original asphalt crater on northern roundabout lane",
-        createdAt: new Date(Date.now() - 48 * 3600 * 1000).toISOString(),
-      },
-    ],
-  },
-};
 
 export default function AdminRequestDetailPage() {
   const params = useParams();
@@ -237,89 +86,38 @@ export default function AdminRequestDetailPage() {
   const { data: fetchedFeedback, refetch: refetchFeedback } =
     useRequestFeedback(requestId);
 
-  // Harmonized active data
-  const fallbackEntry = FALLBACK_ADMIN_DETAILS[requestId] || {
-    request: {
-      id: requestId,
-      requestNo: `REQ-2026-${requestId.replace(/\D/g, "").padStart(4, "0") || "9999"}`,
-      title: "Municipal Service Request",
-      description:
-        "Citizen submitted municipal maintenance request under active civic tracking.",
-      type: "COMPLAINT",
-      priority: "MEDIUM",
-      status: "SUBMITTED",
-      wardId: "ward-01",
-      categoryId: "cat-general",
-      citizenId: "citizen-1",
-      addressLine: "Dhaka Metropolitan Area",
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      resolutionDueAt: new Date(Date.now() + 48 * 3600 * 1000).toISOString(),
-      category: {
-        id: "cat-general",
-        departmentId: "dept-gen",
-        name: "General Municipal Maintenance",
-        isActive: true,
-        department: {
-          id: "dept-gen",
-          name: "City Municipal Services",
-          code: "CMS",
-          contactEmail: "support@dhakacity.gov.bd",
-          contactPhone: "+880 2 9568000",
-          isActive: true,
-        },
-      },
-      ward: {
-        id: "ward-01",
-        name: "Ward 01 (Central)",
-        city: "Dhaka",
-        isActive: true,
-      },
-    },
-    timeline: [
-      {
-        id: "evt-gen-1",
-        type: "SUBMITTED",
-        title: "Complaint Created",
-        description: "Complaint logged and queued for department dispatch.",
-        timestamp: new Date().toISOString(),
-      },
-    ],
-    updates: [],
-    attachments: [],
-  };
+  const request = fetchedRequest?.data;
+  const timelineEvents: TimelineEvent[] = fetchedTimeline?.data || [];
+  const workUpdates: WorkUpdate[] = fetchedUpdates?.data || [];
+  const attachments: MediaAttachment[] = request?.attachments || [];
+  const activeFeedback: Feedback | null = fetchedFeedback?.data || null;
 
-  const request: ServiceRequest = useMemo(() => {
-    if (fetchedRequest?.data) return fetchedRequest.data;
-    return fallbackEntry.request;
-  }, [fetchedRequest, fallbackEntry.request]);
+  if (isRequestLoading) {
+    return <AdminRequestDetailsLoading />;
+  }
 
-  const timelineEvents: TimelineEvent[] = useMemo(() => {
-    if (fetchedTimeline?.data && fetchedTimeline.data.length > 0) {
-      return fetchedTimeline.data;
-    }
-    return fallbackEntry.timeline;
-  }, [fetchedTimeline, fallbackEntry.timeline]);
-
-  const workUpdates: WorkUpdate[] = useMemo(() => {
-    if (fetchedUpdates?.data && fetchedUpdates.data.length > 0) {
-      return fetchedUpdates.data;
-    }
-    return fallbackEntry.updates;
-  }, [fetchedUpdates, fallbackEntry.updates]);
-
-  const attachments: MediaAttachment[] = useMemo(() => {
-    if (request.attachments && request.attachments.length > 0) {
-      return request.attachments;
-    }
-    return fallbackEntry.attachments;
-  }, [request.attachments, fallbackEntry.attachments]);
-
-  const activeFeedback: Feedback | null = useMemo(() => {
-    if (fetchedFeedback?.data) return fetchedFeedback.data;
-    if (fallbackEntry?.feedback) return fallbackEntry.feedback;
-    return null;
-  }, [fetchedFeedback, fallbackEntry]);
+  if (!request) {
+    return (
+      <div className="flex flex-col items-center justify-center p-12 text-center border rounded-xl bg-card space-y-4">
+        <div className="size-12 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-500">
+          <Clock className="size-6" />
+        </div>
+        <div className="space-y-1">
+          <h2 className="text-lg font-bold">Complaint Case File Not Found</h2>
+          <p className="text-xs text-muted-foreground max-w-sm">
+            The requested municipal ticket ({requestId}) could not be located in
+            the central database or has been archived.
+          </p>
+        </div>
+        <Link href="/admin/requests">
+          <Button variant="outline" size="sm">
+            <ArrowLeft className="size-4 mr-2" />
+            Back to All Complaints
+          </Button>
+        </Link>
+      </div>
+    );
+  }
 
   // Safe location resolving
   const addressDisplay =
@@ -408,8 +206,28 @@ export default function AdminRequestDetailPage() {
   const isResolved =
     request.status === "RESOLVED" || request.status === "CLOSED";
 
-  if (isRequestLoading && !FALLBACK_ADMIN_DETAILS[requestId]) {
+  if (isRequestLoading) {
     return <AdminRequestDetailsLoading />;
+  }
+
+  if (!request) {
+    return (
+      <div className="flex flex-col items-center justify-center p-12 text-center border rounded-xl bg-card space-y-4">
+        <div className="size-12 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-500">
+          <Clock className="size-6" />
+        </div>
+        <div className="space-y-1">
+          <h2 className="text-lg font-bold">Complaint Not Found</h2>
+          <p className="text-xs text-muted-foreground max-w-sm">
+            The requested municipal service petition could not be found or has
+            been removed.
+          </p>
+        </div>
+        <Link href="/admin/requests">
+          <Button size="sm">Back to Triage Queue</Button>
+        </Link>
+      </div>
+    );
   }
 
   return (

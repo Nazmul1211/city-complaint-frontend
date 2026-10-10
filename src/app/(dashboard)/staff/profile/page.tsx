@@ -27,12 +27,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
@@ -57,29 +52,11 @@ export default function StaffProfilePage() {
   const departments = deptsData?.data ?? [];
   const allRequests = requestsData?.data ?? [];
 
-  // Fallback demo staff profile if not yet fetched
-  const fallbackStaff: User = {
-    id: "47ae30ea-3ba0-42eb-8c45-bd867421316f",
-    name: "Rakibul Karim",
-    email: "rakib.staff@citycare.com",
-    role: "STAFF",
-    status: "ACTIVE",
-    emailVerified: true,
-    avatarUrl: null,
-    avatarPublicId: null,
-    phone: "01719876543",
-    authProvider: "CREDENTIAL",
-    isDeleted: false,
-    deletedAt: null,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  };
-
-  const user: User = (rawUser as User) || fallbackStaff;
+  const user: User | undefined = rawUser as User | undefined;
 
   // Local form state for editable fields
-  const [name, setName] = useState(user.name || "");
-  const [phone, setPhone] = useState(user.phone || "");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
 
   // Update local state when user data finishes loading
   useMemo(() => {
@@ -99,26 +76,27 @@ export default function StaffProfilePage() {
       );
       if (active) {
         return {
-          name: active.department?.name || "Road & Infrastructure",
-          code: active.department?.code || "RD",
-          position: active.position || "TECHNICIAN",
+          name: active.department?.name || "Municipal Operations",
+          code: active.department?.code || "MO",
+          position: active.position || "FIELD_TECHNICIAN",
         };
       }
     }
 
-    // Default to Road & Infrastructure for demo staff
-    const roadDept = departments.find(
-      (d) => d.code === "RD" || d.name.toLowerCase().includes("road"),
-    );
+    const firstDept = departments[0];
     return {
-      name: roadDept?.name || "Road & Infrastructure",
-      code: roadDept?.code || "RD",
-      position: "TECHNICIAN",
+      name: firstDept?.name || "Municipal Operations",
+      code: firstDept?.code || "MO",
+      position: "FIELD_TECHNICIAN",
     };
-  }, [rawUser, departments]);
+  }, [departments, rawUser]);
 
   // Casework workload statistics for this staff member
   const myCasework = useMemo(() => {
+    if (!user?.id) {
+      return { total: 0, resolved: 0, inProgress: 0 };
+    }
+
     const assigned = allRequests.filter(
       (r) =>
         r.assignedTechnicianId === user.id ||
@@ -138,7 +116,7 @@ export default function StaffProfilePage() {
       resolved: resolved.length,
       inProgress: inProgress.length,
     };
-  }, [allRequests, user.id]);
+  }, [allRequests, user?.id]);
 
   const handleCopyId = (id: string) => {
     navigator.clipboard.writeText(id);
@@ -176,6 +154,21 @@ export default function StaffProfilePage() {
           <Skeleton className="h-80 rounded-xl" />
           <Skeleton className="h-96 rounded-xl lg:col-span-2" />
         </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="flex flex-col items-center justify-center p-12 text-center border rounded-xl bg-card space-y-4">
+        <HardHat className="size-10 text-muted-foreground" />
+        <h2 className="text-lg font-bold">Staff Profile Unavailable</h2>
+        <p className="text-xs text-muted-foreground max-w-sm">
+          Please sign in with a verified technician or staff account.
+        </p>
+        <Link href="/login">
+          <Button size="sm">Go to Login</Button>
+        </Link>
       </div>
     );
   }
@@ -218,7 +211,8 @@ export default function StaffProfilePage() {
           </div>
 
           <p className="mt-1 text-xs text-muted-foreground sm:text-sm max-w-2xl">
-            Manage your field contact details, public credentials, avatar, and security passwords.
+            Manage your field contact details, public credentials, avatar, and
+            security passwords.
           </p>
         </div>
 
@@ -250,7 +244,8 @@ export default function StaffProfilePage() {
                 role={user.role}
               />
               <p className="mt-3 text-[11px] text-center text-muted-foreground">
-                Visible to citizens and supervisors on assigned ticket work updates.
+                Visible to citizens and supervisors on assigned ticket work
+                updates.
               </p>
             </CardContent>
           </Card>
@@ -265,7 +260,9 @@ export default function StaffProfilePage() {
             </CardHeader>
             <CardContent className="p-4 space-y-3.5 text-xs">
               <div>
-                <span className="text-muted-foreground">Official Staff ID:</span>
+                <span className="text-muted-foreground">
+                  Official Staff ID:
+                </span>
                 <div className="flex items-center justify-between mt-1 rounded-md bg-muted/50 p-2 font-mono text-[11px] text-foreground">
                   <span className="truncate max-w-[190px]">{user.id}</span>
                   <button
@@ -289,7 +286,10 @@ export default function StaffProfilePage() {
 
               <div className="border-t pt-2.5 flex items-center justify-between">
                 <span className="text-muted-foreground">Position Role:</span>
-                <Badge variant="warning" className="font-mono text-[10px] uppercase">
+                <Badge
+                  variant="warning"
+                  className="font-mono text-[10px] uppercase"
+                >
                   {departmentInfo.position}
                 </Badge>
               </div>
@@ -322,7 +322,8 @@ export default function StaffProfilePage() {
             </CardHeader>
             <CardContent className="p-4 space-y-3">
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Staff authentication tokens and dispatch credentials are encrypted. You can rotate your password at any time.
+                Staff authentication tokens and dispatch credentials are
+                encrypted. You can rotate your password at any time.
               </p>
               <Button
                 variant="outline"
@@ -347,7 +348,8 @@ export default function StaffProfilePage() {
                 Officer Contact & Dispatch Information
               </CardTitle>
               <p className="mt-1 text-xs text-muted-foreground">
-                Ensure your contact telephone is up to date so municipal dispatchers and citizens can reach you for on-site inspections.
+                Ensure your contact telephone is up to date so municipal
+                dispatchers and citizens can reach you for on-site inspections.
               </p>
             </CardHeader>
             <CardContent className="p-6">
@@ -356,7 +358,10 @@ export default function StaffProfilePage() {
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     {/* Full Name */}
                     <Field>
-                      <FieldLabel htmlFor="staff-name" className="text-xs font-semibold">
+                      <FieldLabel
+                        htmlFor="staff-name"
+                        className="text-xs font-semibold"
+                      >
                         Full Name <span className="text-destructive">*</span>
                       </FieldLabel>
                       <div className="relative mt-1">
@@ -374,7 +379,10 @@ export default function StaffProfilePage() {
 
                     {/* Official Email (Read-Only) */}
                     <Field>
-                      <FieldLabel htmlFor="staff-email" className="text-xs font-semibold">
+                      <FieldLabel
+                        htmlFor="staff-email"
+                        className="text-xs font-semibold"
+                      >
                         Official Municipal Email
                       </FieldLabel>
                       <div className="relative mt-1">
@@ -387,7 +395,8 @@ export default function StaffProfilePage() {
                         <Mail className="absolute left-3 top-2.5 size-3.5 text-muted-foreground" />
                       </div>
                       <p className="text-[10px] text-muted-foreground mt-1">
-                        Official staff email is managed by your municipal administrator.
+                        Official staff email is managed by your municipal
+                        administrator.
                       </p>
                     </Field>
                   </div>
@@ -395,7 +404,10 @@ export default function StaffProfilePage() {
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
                     {/* Contact Phone */}
                     <Field>
-                      <FieldLabel htmlFor="staff-phone" className="text-xs font-semibold">
+                      <FieldLabel
+                        htmlFor="staff-phone"
+                        className="text-xs font-semibold"
+                      >
                         Contact Phone / Mobile
                       </FieldLabel>
                       <div className="relative mt-1">
@@ -463,11 +475,16 @@ export default function StaffProfilePage() {
                     Field Workload & Performance Overview
                   </CardTitle>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    Complaints assigned, inspected, and photo-verified under your officer credentials.
+                    Complaints assigned, inspected, and photo-verified under
+                    your officer credentials.
                   </p>
                 </div>
                 <Link href="/staff/assigned">
-                  <Button variant="ghost" size="sm" className="gap-1 text-xs h-8">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="gap-1 text-xs h-8"
+                  >
                     <span>View All</span>
                     <ArrowRight className="size-3" />
                   </Button>

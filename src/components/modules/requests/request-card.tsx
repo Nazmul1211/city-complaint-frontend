@@ -58,7 +58,15 @@ export function RequestCard({ request }: RequestCardProps) {
           <div className="flex items-center gap-2">
             <MapPin className="size-3.5 shrink-0 text-muted-foreground" />
             <span className="truncate">
-              {request.ward?.name ?? "Ward"} - {request.addressLine}
+              {request.reportedLocation?.ward?.name ||
+                request.ward?.name ||
+                "Municipal Ward"}{" "}
+              •{" "}
+              {request.reportedLocation?.addressLine ||
+                request.addressLine ||
+                request.reportedLocation?.landmark ||
+                request.landmark ||
+                "Location specified"}
             </span>
           </div>
 

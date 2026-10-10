@@ -31,21 +31,8 @@ interface ComplaintsTrendChartProps {
   className?: string;
 }
 
-const defaultMonthlyData: MonthlyTrendData[] = [
-  { month: "Jan", submitted: 45, resolved: 38 },
-  { month: "Feb", submitted: 52, resolved: 47 },
-  { month: "Mar", submitted: 78, resolved: 65 },
-  { month: "Apr", submitted: 94, resolved: 82 },
-  { month: "May", submitted: 88, resolved: 80 },
-  { month: "Jun", submitted: 112, resolved: 98 },
-  { month: "Jul", submitted: 125, resolved: 110 },
-  { month: "Aug", submitted: 104, resolved: 99 },
-  { month: "Sep", submitted: 92, resolved: 88 },
-  { month: "Oct", submitted: 85, resolved: 81 },
-];
-
 export function ComplaintsTrendChart({
-  data = defaultMonthlyData,
+  data = [],
   className,
 }: ComplaintsTrendChartProps) {
   const [isMounted, setIsMounted] = useState(false);
@@ -53,6 +40,9 @@ export function ComplaintsTrendChart({
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  const totalSubmitted = data.reduce((acc, curr) => acc + curr.submitted, 0);
+  const totalResolved = data.reduce((acc, curr) => acc + curr.resolved, 0);
 
   if (!isMounted) {
     return (
@@ -81,7 +71,9 @@ export function ComplaintsTrendChart({
             </CardDescription>
           </div>
           <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-md self-start sm:self-auto">
-            +14% Resolution Velocity
+            {totalSubmitted > 0
+              ? `${totalResolved} of ${totalSubmitted} Resolved`
+              : "Live Timeline Active"}
           </span>
         </div>
       </CardHeader>
