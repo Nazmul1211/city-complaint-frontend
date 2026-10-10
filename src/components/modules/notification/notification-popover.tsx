@@ -27,7 +27,12 @@ import {
 } from "@/components/ui/popover";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/components/ui/toast";
-import { useMarkAllAsRead, useMarkAsRead, useNotifications } from "@/hooks";
+import {
+  useGetMe,
+  useMarkAllAsRead,
+  useMarkAsRead,
+  useNotifications,
+} from "@/hooks";
 import type { Notification } from "@/types";
 
 const SKELETON_KEYS = ["sk-notif-1", "sk-notif-2", "sk-notif-3"];
@@ -53,8 +58,17 @@ function formatTimeAgo(dateString: string): string {
   }
 }
 
-function getNotificationMeta(item: Notification) {
+function getNotificationMeta(item: Notification, userRole?: string) {
   const type = item.type;
+  const isAdmin = userRole === "ADMIN" || userRole === "SUPER_ADMIN";
+  const defaultRequestRoute = isAdmin
+    ? item.requestId
+      ? `/admin/requests/${item.requestId}`
+      : "/admin/requests"
+    : item.requestId
+      ? `/dashboard/requests/${item.requestId}`
+      : "/dashboard/requests";
+
   switch (type) {
     case "PAYMENT_REQUIRED":
       return {
@@ -64,7 +78,7 @@ function getNotificationMeta(item: Notification) {
         description:
           item.payload?.message ||
           `Payment of ৳${item.payload?.amount || "--"} BDT is pending.`,
-        href: "/dashboard/payments",
+        href: isAdmin ? "/admin/requests" : "/dashboard/payments",
       };
     case "PAYMENT_SUCCESSFUL":
       return {
@@ -74,7 +88,9 @@ function getNotificationMeta(item: Notification) {
         description:
           item.payload?.message ||
           "Your municipal payment has cleared via bKash.",
-        href: "/dashboard/payments?status=success",
+        href: isAdmin
+          ? "/admin/audit-logs"
+          : "/dashboard/payments?status=success",
       };
     case "STATUS_CHANGED":
       return {
@@ -84,9 +100,7 @@ function getNotificationMeta(item: Notification) {
         description:
           item.payload?.title ||
           `Case ${item.payload?.requestNo || ""} transitioned to ${item.payload?.newStatus || "new state"}.`,
-        href: item.requestId
-          ? `/dashboard/requests/${item.requestId}`
-          : "/dashboard/requests",
+        href: defaultRequestRoute,
       };
     case "REQUEST_ASSIGNED":
       return {
@@ -96,9 +110,7 @@ function getNotificationMeta(item: Notification) {
         description: item.payload?.departmentName
           ? `Dispatched to ${item.payload.departmentName}.`
           : "A technician was assigned to your case.",
-        href: item.requestId
-          ? `/dashboard/requests/${item.requestId}`
-          : "/dashboard/requests",
+        href: defaultRequestRoute,
       };
     case "WORK_UPDATE_ADDED":
       return {
@@ -108,9 +120,7 @@ function getNotificationMeta(item: Notification) {
         description:
           item.payload?.note ||
           "On-site progress was updated by the technician.",
-        href: item.requestId
-          ? `/dashboard/requests/${item.requestId}`
-          : "/dashboard/requests",
+        href: defaultRequestRoute,
       };
     case "FEEDBACK_REQUESTED":
       return {
@@ -119,9 +129,7 @@ function getNotificationMeta(item: Notification) {
         title: "Rate City Resolution",
         description:
           "Your complaint was resolved. Please rate municipal service.",
-        href: item.requestId
-          ? `/dashboard/requests/${item.requestId}`
-          : "/dashboard/requests",
+        href: defaultRequestRoute,
       };
     case "REQUEST_CREATED":
       return {
@@ -131,9 +139,7 @@ function getNotificationMeta(item: Notification) {
         description:
           item.payload?.title ||
           `Complaint [${item.payload?.requestNo || ""}] recorded into registry.`,
-        href: item.requestId
-          ? `/dashboard/requests/${item.requestId}`
-          : "/dashboard/requests",
+        href: defaultRequestRoute,
       };
     default:
       return {
@@ -141,7 +147,7 @@ function getNotificationMeta(item: Notification) {
         color: "text-muted-foreground bg-muted border-border/60",
         title: "Municipal Notice",
         description: item.payload?.message || "You have a new civic update.",
-        href: "/dashboard/requests",
+        href: isAdmin ? "/admin/requests" : "/dashboard/requests",
       };
   }
 }
@@ -150,6 +156,9 @@ export function NotificationPopover() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [filterUnread, setFilterUnread] = useState(false);
+
+  const { data: meData } = useGetMe();
+  const userRole = meData?.data?.role;
 
   const { data: notifData, isLoading } = useNotifications();
   const notifications: Notification[] = notifData?.data || [];
@@ -191,7 +200,7 @@ export function NotificationPopover() {
     if (!item.readAt) {
       markAsReadMutation.mutate(item.id);
     }
-    const meta = getNotificationMeta(item);
+    const meta = getNotificationMeta(item, userRole);
     setOpen(false);
     router.push(meta.href);
   };
@@ -310,7 +319,7 @@ export function NotificationPopover() {
             </div>
           ) : (
             displayedNotifications.map((item) => {
-              const meta = getNotificationMeta(item);
+              const meta = getNotificationMeta(item, userRole);
               const Icon = meta.icon;
               const isUnread = !item.readAt;
 

@@ -93,16 +93,18 @@ export default function AdminOverviewPage() {
     const resolutionRate =
       total > 0 ? Math.round((completed / total) * 100) : 88;
 
+    const isMock = total === 0;
+
     return {
-      total: total || 148,
-      active: active || 42,
-      resolved: completed || 98,
-      inProgress: inProgress || 22,
-      assigned: assigned || 12,
-      underReview: underReview || 8,
-      submitted: submitted || 6,
-      rejected: rejected || 4,
-      pending: pending || 2,
+      total: isMock ? 148 : total,
+      active: isMock ? 42 : active,
+      resolved: isMock ? 98 : completed,
+      inProgress: isMock ? 22 : inProgress,
+      assigned: isMock ? 12 : assigned,
+      underReview: isMock ? 8 : underReview,
+      submitted: isMock ? 6 : submitted,
+      rejected: isMock ? 4 : rejected,
+      pending: isMock ? 2 : pending,
       resolutionRate,
       slaAdherence: 94.2,
     };
@@ -133,12 +135,12 @@ export default function AdminOverviewPage() {
         const resolved = deptRequests.filter(
           (r) => r.status === "RESOLVED" || r.status === "CLOSED",
         ).length;
-        const rate = total > 0 ? (resolved / total) * 100 : 85;
+        const rate = total > 0 ? (resolved / total) * 100 : 100;
 
         return {
           department: dept.name,
-          total: total || 15,
-          resolved: resolved || 12,
+          total,
+          resolved,
           rate: Math.round(rate * 10) / 10,
         };
       });
@@ -192,7 +194,7 @@ export default function AdminOverviewPage() {
             <span>Triage & Dispatch</span>
           </Link>
           <Link
-            href="/departments"
+            href="/admin/departments"
             className={buttonVariants({
               size: "sm",
               className: "gap-2 bg-primary text-primary-foreground",

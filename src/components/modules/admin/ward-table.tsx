@@ -76,7 +76,7 @@ export function WardTable() {
       (w) =>
         w.name.toLowerCase().includes(q) ||
         Boolean(w.code?.toLowerCase().includes(q)) ||
-        w.city.toLowerCase().includes(q) ||
+        Boolean(w.city?.toLowerCase().includes(q)) ||
         Boolean(w.wardNumber?.toLowerCase().includes(q)),
     );
   }, [wards, searchTerm]);

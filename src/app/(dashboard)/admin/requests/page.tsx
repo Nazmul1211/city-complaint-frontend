@@ -95,14 +95,27 @@ export default function AdminRequestsDispatchPage() {
 
     if (debouncedSearch.trim()) {
       const q = debouncedSearch.toLowerCase();
-      list = list.filter(
-        (r) =>
+      list = list.filter((r) => {
+        const address =
+          r.addressLine ||
+          r.reportedLocation?.addressLine ||
+          r.landmark ||
+          r.reportedLocation?.landmark ||
+          "";
+        const ward =
+          r.ward?.name ||
+          r.reportedLocation?.ward?.name ||
+          (r.ward?.wardNumber ? `Ward ${r.ward.wardNumber}` : "");
+
+        return (
           r.requestNo.toLowerCase().includes(q) ||
           r.title.toLowerCase().includes(q) ||
           r.description.toLowerCase().includes(q) ||
           Boolean(r.citizen?.name?.toLowerCase().includes(q)) ||
-          Boolean(r.addressLine?.toLowerCase().includes(q)),
-      );
+          address.toLowerCase().includes(q) ||
+          ward.toLowerCase().includes(q)
+        );
+      });
     }
 
     return list;
@@ -431,6 +444,20 @@ export default function AdminRequestsDispatchPage() {
                           d.id === req.category?.departmentId,
                       );
 
+                    const address =
+                      req.addressLine ||
+                      req.reportedLocation?.addressLine ||
+                      req.landmark ||
+                      req.reportedLocation?.landmark ||
+                      "Incident address recorded";
+
+                    const wardName =
+                      req.ward?.name ||
+                      req.reportedLocation?.ward?.name ||
+                      (req.ward?.wardNumber
+                        ? `Ward ${req.ward.wardNumber}`
+                        : "");
+
                     return (
                       <TableRow
                         key={req.id}
@@ -439,7 +466,7 @@ export default function AdminRequestsDispatchPage() {
                         {/* Request No & Date */}
                         <TableCell className="font-medium">
                           <Link
-                            href={`/dashboard/requests/${req.id}`}
+                            href={`/admin/requests/${req.id}`}
                             className="font-mono text-primary font-semibold hover:underline block"
                           >
                             {req.requestNo}
@@ -466,9 +493,8 @@ export default function AdminRequestsDispatchPage() {
                           <div className="flex items-center gap-1 text-[11px] text-muted-foreground truncate mt-0.5">
                             <MapPin className="size-3 shrink-0 text-muted-foreground/70" />
                             <span className="truncate">
-                              {req.addressLine}
-                              {req.ward?.wardNumber &&
-                                ` (Ward ${req.ward.wardNumber})`}
+                              {address}
+                              {wardName && ` (${wardName})`}
                             </span>
                           </div>
                         </TableCell>
@@ -556,7 +582,7 @@ export default function AdminRequestsDispatchPage() {
 
                             {/* View Full Case Link */}
                             <Link
-                              href={`/dashboard/requests/${req.id}`}
+                              href={`/admin/requests/${req.id}`}
                               className={buttonVariants({
                                 variant: "ghost",
                                 size: "icon-xs",

@@ -337,8 +337,27 @@ export function UsersTable() {
                         </div>
                       </TableCell>
 
-                      {/* Role */}
-                      <TableCell>{getRoleBadge(user.role)}</TableCell>
+                      {/* Role & Department */}
+                      <TableCell>
+                        <div className="space-y-1">
+                          {getRoleBadge(user.role)}
+                          {user.departmentMemberships &&
+                            user.departmentMemberships.length > 0 && (
+                              <div
+                                className="text-[10px] text-muted-foreground truncate max-w-[160px]"
+                                title={
+                                  user.departmentMemberships[0]?.department
+                                    ?.name
+                                }
+                              >
+                                {
+                                  user.departmentMemberships[0]?.department
+                                    ?.name
+                                }
+                              </div>
+                            )}
+                        </div>
+                      </TableCell>
 
                       {/* Account Status */}
                       <TableCell>{getStatusBadge(user.status)}</TableCell>

@@ -51,16 +51,28 @@ export function DashboardSidebar({ userRole }: { userRole: UserRole }) {
             </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {group.items.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton
-                      render={<Link href={item.url} />}
-                      isActive={pathname === item.url}
-                    >
-                      <span>{item.title}</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
+                {group.items.map((item) => {
+                  const isItemActive =
+                    item.url === "/admin" ||
+                    item.url === "/staff" ||
+                    item.url === "/dashboard"
+                      ? pathname === item.url
+                      : pathname === item.url ||
+                        pathname.startsWith(`${item.url}/`);
+                  const ItemIcon = item.icon;
+
+                  return (
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton
+                        render={<Link href={item.url} />}
+                        isActive={isItemActive}
+                      >
+                        {ItemIcon && <ItemIcon className="size-4 shrink-0" />}
+                        <span>{item.title}</span>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
